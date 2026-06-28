@@ -1,0 +1,306 @@
+.editTeacherRoot {
+  color: var(--on-surface);
+  background-color: var(--surface);
+  min-height: 100vh;
+}
+
+.mainContent {
+  margin-left: 280px;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: calc(64px + var(--spacing-xl)) var(--spacing-xl) var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: var(--spacing-xl);
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-label-sm);
+  color: var(--on-surface-variant);
+  margin-bottom: var(--spacing-base);
+}
+
+.breadcrumbLink {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.breadcrumbLink:hover {
+  color: var(--primary);
+}
+
+.breadcrumbActive {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.pageTitle {
+  font-size: var(--font-headline-lg);
+  font-weight: 600;
+  color: var(--primary);
+  line-height: 40px;
+  letter-spacing: -0.01em;
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.cancelBtn {
+  padding: 10px 24px;
+  border-radius: 8px;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  background: transparent;
+  font-size: var(--font-label-lg);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cancelBtn:hover {
+  background-color: rgba(0, 43, 116, 0.05);
+}
+
+.submitBtn {
+  padding: 10px 24px;
+  border-radius: 8px;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  font-size: var(--font-label-lg);
+  font-weight: 500;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.submitBtn:hover {
+  opacity: 0.9;
+}
+
+.alertError {
+  background: var(--error-bg);
+  color: var(--error);
+  padding: 12px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.alertSuccess {
+  background: #e8f5e9;
+  color: var(--success);
+  padding: 12px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.loadingSpinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 0;
+  gap: 16px;
+  color: var(--outline);
+}
+
+.spin {
+  animation: spin_animation 1s linear infinite;
+  font-size: 32px;
+}
+
+@keyframes spin_animation {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: var(--spacing-xl);
+  align-items: start;
+}
+
+.profileCard {
+  background: white;
+  border-radius: var(--border-radius-md);
+  padding: 32px 24px;
+  border: 1px solid var(--outline-variant, var(--outline-variant));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.avatarWrapper {
+  margin-bottom: var(--spacing-lg);
+}
+
+.avatarImage {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--primary-container);
+}
+
+.avatarPlaceholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: var(--primary-container, var(--outline-variant));
+  color: var(--primary, var(--primary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  fontSize: 48px;
+  font-weight: 600;
+  border: 3px solid var(--primary-container);
+}
+
+.profileName {
+  font-size: var(--font-title-lg);
+  font-weight: 600;
+  margin: 0 0 var(--spacing-xs) 0;
+  text-align: center;
+}
+
+.profileRole {
+  color: var(--outline);
+  font-size: var(--font-body-medium);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.statusBadge {
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: var(--font-label-medium);
+  font-weight: 600;
+}
+
+.statusActive {
+  background-color: var(--success-bg);
+  color: var(--success);
+}
+
+.statusInactive {
+  background-color: #fce8e6;
+  color: var(--error);
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.formSection {
+  background: white;
+  border-radius: var(--border-radius-md);
+  padding: 24px;
+  border: 1px solid var(--outline-variant, var(--outline-variant));
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--outline-variant, var(--outline-variant));
+  padding-bottom: var(--spacing-sm);
+}
+
+.sectionTitle {
+  font-size: var(--font-title-medium);
+  font-weight: 600;
+  color: var(--on-surface);
+  margin: 0;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-lg);
+}
+
+.fullWidth {
+  grid-column: span 2;
+}
+
+.inputLabel {
+  display: block;
+  font-size: var(--font-label-large);
+  font-weight: 500;
+  color: var(--on-surface-variant);
+  margin-bottom: var(--spacing-xs);
+}
+
+.inputField, .selectField {
+  width: 100%;
+  padding: var(--spacing-md);
+  border-radius: 8px;
+  border: 1px solid var(--outline);
+  font-size: var(--font-body-large);
+  color: var(--on-surface);
+  background-color: transparent;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.inputField:focus, .selectField:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--primary-container);
+}
+
+.inputFieldDisabled, .selectFieldDisabled {
+  width: 100%;
+  padding: var(--spacing-md);
+  border-radius: 8px;
+  border: 1px solid var(--outline-variant, var(--outline-variant));
+  font-size: var(--font-body-large);
+  color: var(--text-muted);
+  background-color: #f1f5f9;
+  box-sizing: border-box;
+  cursor: not-allowed;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+}

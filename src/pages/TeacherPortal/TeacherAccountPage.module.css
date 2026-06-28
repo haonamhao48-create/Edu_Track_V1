@@ -1,0 +1,245 @@
+/* =========================================================
+   Teacher Account Settings Layout
+   ========================================================= */
+
+.pageRoot {
+  color: var(--on-surface);
+  background-color: var(--body-bg);
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.mainContent {
+  margin-left: 280px; /* Matches Sidebar width */
+  padding-top: 72px;  /* Matches Header height */
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--spacing-md) var(--spacing-sm);
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--border-radius-DEFAULT);
+  color: var(--tertiary);
+  font-weight: 700;
+  font-size: var(--font-label-lg);
+  cursor: pointer;
+  padding: 8px 16px;
+  align-self: flex-start;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 24px;
+}
+
+.backBtn:hover {
+  background-color: var(--surface-container-high);
+  border-color: var(--text-muted);
+  transform: translateX(-2px);
+}
+
+.pageHeader {
+  margin-bottom: 24px;
+}
+
+.pageTitle {
+  font-family: var(--font-family-display);
+  font-size: var(--font-headline-lg);
+  line-height: var(--line-height-headline-lg);
+  color: var(--on-surface);
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: -0.02em;
+}
+
+.pageSubtitle {
+  font-size: var(--font-body-md);
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* =========================================================
+   Profile Details Content Card
+   ========================================================= */
+
+.contentCard {
+  background-color: var(--surface-container-lowest);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--outline-variant);
+  box-shadow: var(--shadow-sm);
+  padding: 28px;
+}
+
+.profileHeaderSection {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--outline-variant);
+  padding-bottom: 24px;
+}
+
+.avatarCircle {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--border-radius-full);
+  background-color: var(--surface-container-highest);
+  color: var(--tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-mono);
+  font-weight: 700;
+  font-size: 28px;
+  border: 1px solid var(--outline-variant);
+}
+
+.profileHeaderSection h4 {
+  font-family: var(--font-family-display);
+  font-size: var(--font-title-lg);
+  font-weight: 700;
+  color: var(--on-surface);
+  margin-bottom: 2px;
+}
+
+.profileHeaderSection p {
+  font-size: var(--font-label-lg);
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* =========================================================
+   Details Grid Data Fields
+   ========================================================= */
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 640px) {
+  .detailsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: var(--border-radius-DEFAULT);
+  border: 1px solid var(--outline-variant);
+  background-color: var(--surface-container-low);
+}
+
+.detailLabel {
+  font-size: var(--font-label-sm);
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detailValue {
+  font-size: var(--font-body-md);
+  font-weight: 700;
+  color: var(--on-surface);
+}
+
+.inputField {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--border-radius-DEFAULT);
+  font-size: var(--font-body-md);
+  color: var(--on-surface);
+  background-color: var(--surface-container-lowest);
+  margin-top: 4px;
+  box-sizing: border-box;
+  transition: all var(--transition-fast);
+}
+
+.inputField:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* =========================================================
+   Form Actions Buttons
+   ========================================================= */
+
+.editBtn {
+  background-color: var(--primary);
+  border: 1px solid var(--primary);
+  color: var(--on-primary);
+  padding: 8px 16px;
+  border-radius: var(--border-radius-DEFAULT);
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: auto;
+  transition: all var(--transition-fast);
+}
+
+.editBtn:hover {
+  background-color: var(--tertiary);
+  border-color: var(--tertiary);
+}
+
+.saveBtn {
+  background-color: var(--success);
+  border: 1px solid var(--success);
+  color: var(--on-primary);
+  padding: 8px 16px;
+  border-radius: var(--border-radius-DEFAULT);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.saveBtn:hover {
+  background-color: var(--tertiary);
+  border-color: var(--tertiary);
+}
+
+.cancelBtn {
+  background-color: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  color: var(--tertiary);
+  padding: 8px 16px;
+  border-radius: var(--border-radius-DEFAULT);
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 8px;
+  transition: all var(--transition-fast);
+}
+
+.cancelBtn:hover {
+  background-color: var(--surface-container-high);
+  border-color: var(--text-muted);
+}
+
+.loadingSpinner {
+  text-align: center;
+  padding: var(--spacing-lg) 0;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: var(--font-body-md);
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    margin-left: 0;
+    padding-top: 80px;
+  }
+}

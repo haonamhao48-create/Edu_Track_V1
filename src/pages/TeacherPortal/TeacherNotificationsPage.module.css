@@ -1,0 +1,280 @@
+/* =========================================================
+   Teacher Notifications Layout
+   ========================================================= */
+
+.notificationsRoot {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--body-bg);
+}
+
+.mainContent {
+  flex-grow: 1;
+  padding: var(--spacing-md) var(--spacing-sm);
+  margin-left: 280px; /* sidebar width */
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    margin-left: 0;
+    padding: var(--spacing-sm);
+    padding-top: 80px; /* header space */
+  }
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* =========================================================
+   Page Header
+   ========================================================= */
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.headerLeft h3 {
+  font-family: var(--font-family-display);
+  font-size: var(--font-headline-md);
+  font-weight: 700;
+  color: var(--on-surface);
+  letter-spacing: -0.5px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.unreadBadge {
+  background-color: var(--info-bg);
+  color: var(--info);
+  font-size: var(--font-label-lg);
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--border-radius-DEFAULT);
+  line-height: 1;
+}
+
+.markReadBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background-color: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--border-radius-DEFAULT);
+  color: var(--info);
+  font-size: var(--font-label-lg);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.markReadBtn:hover {
+  background-color: var(--surface-container-low);
+  border-color: var(--text-muted);
+}
+
+/* =========================================================
+   Filter Tabs Scrollable
+   ========================================================= */
+
+.filterTabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.filterTabs::-webkit-scrollbar {
+  display: none;
+}
+
+.filterTab {
+  padding: 8px 18px;
+  border-radius: var(--border-radius-DEFAULT);
+  border: 1px solid var(--outline-variant);
+  background-color: var(--surface-container-lowest);
+  color: var(--text-muted);
+  font-size: var(--font-body-md);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.filterTab:hover {
+  background-color: var(--surface-container-low);
+  border-color: var(--text-muted);
+}
+
+.filterTab.active {
+  background-color: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+}
+
+/* =========================================================
+   Empty Placeholder
+   ========================================================= */
+
+.emptyState {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.emptyIconBox {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--border-radius-full);
+  background-color: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+}
+
+.emptyIconInner {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--border-radius-full);
+  background-color: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emptyIconInner span {
+  font-size: 24px;
+  color: var(--text-muted);
+}
+
+.emptyState h5 {
+  font-family: var(--font-family-display);
+  font-size: var(--font-title-lg);
+  font-weight: 700;
+  color: var(--on-surface);
+  margin-bottom: 8px;
+}
+
+.emptyState p {
+  font-size: var(--font-body-md);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* =========================================================
+   Notification Card Rows
+   ========================================================= */
+
+.notificationsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.notificationCardOuter {
+  background-color: var(--surface-container-low);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--outline-variant);
+  padding: 2px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.notificationCardOuter:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--text-muted);
+}
+
+.notificationCardOuter.unread {
+  background-color: var(--surface-container-lowest);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.notificationCardInner {
+  background-color: transparent;
+  padding: 16px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.iconBox {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--border-radius-DEFAULT);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid var(--outline-variant);
+}
+
+.iconBox.attendance {
+  background-color: var(--success-bg);
+  color: var(--success);
+}
+
+.iconBox.schedule {
+  background-color: var(--info-bg);
+  color: var(--info);
+}
+
+.iconBox.system {
+  background-color: var(--warning-bg);
+  color: var(--warning);
+}
+
+.contentBox {
+  flex-grow: 1;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.cardHeader h6 {
+  font-size: var(--font-body-lg);
+  font-weight: 700;
+  color: var(--on-surface);
+  margin: 0;
+}
+
+.timeText {
+  font-size: var(--font-label-lg);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.cardDesc {
+  font-size: var(--font-body-md);
+  color: var(--on-surface-variant);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.loadingSpinner {
+  text-align: center;
+  padding: var(--spacing-lg) 0;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: var(--font-body-md);
+}

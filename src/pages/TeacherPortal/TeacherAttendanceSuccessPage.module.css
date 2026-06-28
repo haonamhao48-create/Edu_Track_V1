@@ -1,0 +1,115 @@
+/* =========================================================
+   Teacher Attendance Success Page Styles
+   ========================================================= */
+
+.classesRoot {
+  color: var(--on-surface);
+  background-color: var(--body-bg);
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.mainContent {
+  margin-left: 280px; /* Matches Sidebar width */
+  min-height: 100vh;
+  padding-top: 72px;  /* Matches Header height */
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: var(--spacing-md) var(--spacing-sm);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 72px);
+}
+
+.reportCard {
+  background-color: var(--surface-container-lowest);
+  padding: 40px;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--outline-variant);
+  box-shadow: var(--shadow-sm);
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+
+.icon {
+  font-size: 64px;
+  color: var(--success);
+  margin-bottom: 16px;
+}
+
+.title {
+  font-family: var(--font-family-display);
+  font-size: var(--font-headline-md);
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--on-surface);
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: var(--font-body-md);
+  margin-bottom: 32px;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.statBox {
+  background-color: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  padding: 16px;
+  border-radius: var(--border-radius-DEFAULT);
+}
+
+.statNum {
+  font-family: var(--font-family-mono);
+  font-size: 24px;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.present {
+  color: var(--success);
+}
+
+.absent {
+  color: var(--error);
+}
+
+.late {
+  color: var(--warning);
+}
+
+.statLabel {
+  font-size: var(--font-label-lg);
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.doneBtn {
+  padding: 12px 32px;
+  background-color: var(--primary);
+  border: 1px solid var(--primary);
+  color: var(--on-primary);
+  border-radius: var(--border-radius-DEFAULT);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.doneBtn:hover {
+  background-color: var(--tertiary);
+  border-color: var(--tertiary);
+}

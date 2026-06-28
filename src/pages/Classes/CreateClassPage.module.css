@@ -1,0 +1,547 @@
+.createRoot {
+  color: var(--on-surface);
+  background-color: var(--body-bg);
+  min-height: 100vh;
+}
+
+.mainContent {
+  margin-left: 280px;
+  padding: calc(64px + var(--spacing-xl)) var(--spacing-xl) var(--spacing-xl);
+  max-width: 1440px;
+  margin-right: auto;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xl);
+}
+
+.backBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--on-surface-variant);
+  transition: background-color 0.2s;
+}
+
+.backBtn:hover {
+  background-color: var(--surface-container);
+}
+
+.pageTitle {
+  font-size: var(--font-headline-lg);
+  font-weight: 700;
+  color: var(--on-surface);
+  margin-bottom: 4px;
+}
+
+.breadcrumb {
+  display: flex;
+  gap: 4px;
+  font-size: var(--font-label-sm);
+  color: var(--on-surface-variant);
+}
+
+.breadcrumbActive {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding-bottom: var(--spacing-2xl);
+}
+
+.formSection {
+  background-color: var(--surface-container-lowest);
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-md);
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--outline-variant);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+.sectionHeader h3 {
+  font-size: var(--font-title-lg);
+  font-weight: 700;
+}
+
+.iconPrimary {
+  color: var(--primary);
+}
+
+.textError {
+  color: var(--error);
+}
+
+/* Grid Layout */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--spacing-lg);
+}
+
+.col2 { grid-column: span 12; }
+.col3 { grid-column: span 12; }
+.col4 { grid-column: span 12; }
+.col6 { grid-column: span 12; }
+
+@media (min-width: 768px) {
+  .col2 { grid-column: span 2; }
+  .col3 { grid-column: span 3; }
+  .col4 { grid-column: span 4; }
+  .col6 { grid-column: span 6; }
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputGroup label {
+  font-size: var(--font-label-lg);
+  font-weight: 500;
+  color: var(--on-surface);
+  margin-bottom: var(--spacing-sm);
+}
+
+.inputField {
+  width: 100%;
+  padding: var(--spacing-md);
+  background-color: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: var(--font-body-md);
+  color: var(--on-surface);
+  outline: none;
+  transition: all 0.2s;
+}
+
+.inputField:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.selectField {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23747783' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--spacing-md) center;
+  background-size: 16px;
+}
+
+/* Teacher Assignment */
+.teacherGroup {
+  max-width: 42rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.teacherGroup label {
+  font-size: var(--font-label-lg);
+  font-weight: 500;
+  color: var(--on-surface);
+  margin-bottom: var(--spacing-sm);
+}
+
+.teacherAssignGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+@media (min-width: 768px) {
+  .teacherAssignGrid {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+.searchWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.searchIcon {
+  position: absolute;
+  left: var(--spacing-md);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--outline);
+}
+
+.searchInput {
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) 48px;
+  background-color: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: var(--font-body-md);
+  outline: none;
+  transition: all 0.2s;
+}
+
+.searchInput:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.teacherTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+}
+
+.teacherTag {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background-color: var(--surface-container-low);
+  padding: 8px 16px;
+  border-radius: 9999px;
+  border: 1px solid var(--outline-variant);
+}
+
+.teacherTagImg {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.teacherTag span {
+  font-size: var(--font-body-md);
+  font-weight: 500;
+}
+
+.teacherTagRemove {
+  background: none;
+  border: none;
+  color: var(--outline-variant);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+  padding: 0;
+}
+
+.teacherTagRemove:hover {
+  color: var(--error);
+}
+
+.teacherTagRemove span {
+  font-size: 16px;
+}
+
+/* Schedule */
+.scheduleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.daysWrapper {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.dayBtn {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid var(--outline-variant);
+  background-color: transparent;
+  color: var(--on-surface);
+  font-family: inherit;
+  font-size: var(--font-body-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dayBtn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.dayBtnActive {
+  background-color: var(--primary);
+  color: var(--on-primary);
+  border: 2px solid var(--primary);
+  font-weight: 700;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.dayBtnActive:hover {
+  color: var(--on-primary);
+}
+
+.timeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-lg);
+  max-width: 42rem;
+}
+
+/* Tuition */
+.tuitionGroup {
+  max-width: 28rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.tuitionGroup label {
+  font-size: var(--font-label-lg);
+  font-weight: 500;
+  color: var(--on-surface);
+  margin-bottom: var(--spacing-sm);
+}
+
+.tuitionInputWrapper {
+  position: relative;
+}
+
+.tuitionInput {
+  font-size: var(--font-headline-md);
+  font-weight: 700;
+  color: var(--primary);
+  padding-right: 64px;
+}
+
+.tuitionSuffix {
+  position: absolute;
+  right: var(--spacing-md);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--font-label-lg);
+  font-weight: 700;
+  color: var(--on-surface-variant);
+}
+
+.tuitionHelper {
+  margin-top: var(--spacing-sm);
+  font-size: var(--font-label-sm);
+  color: var(--on-surface-variant);
+}
+
+/* Footer Actions */
+.formFooter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid var(--outline-variant);
+}
+
+.cancelBtn {
+  background: none;
+  border: none;
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: var(--font-label-lg);
+  font-weight: 700;
+  color: var(--primary-container);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancelBtn:hover {
+  background-color: var(--surface-container);
+}
+
+.submitBtn {
+  background-color: var(--primary);
+  color: var(--on-primary);
+  border: none;
+  padding: var(--spacing-md) var(--spacing-2xl);
+  border-radius: 8px;
+  font-size: var(--font-label-lg);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.submitBtn:hover {
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+.submitBtn:active {
+  transform: translateY(0);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .mainContent {
+    margin-left: 0;
+    padding: calc(64px + var(--spacing-md)) var(--spacing-md) 80px;
+  }
+
+  .timeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .formFooter {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .submitBtn, .cancelBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .daysWrapper {
+    flex-wrap: wrap;
+  }
+}
+
+/* Batch Schedule Integration Styles */
+.switchLabel {
+  user-select: none;
+}
+
+.scheduleSetupArea {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.checkboxGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: var(--border-radius-DEFAULT);
+  border: 1px solid var(--outline-variant);
+  background-color: var(--surface-container-lowest);
+  color: var(--on-surface-variant);
+  font-size: var(--font-body-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: center;
+}
+
+.checkboxLabel:hover {
+  background-color: var(--surface-container-low);
+  border-color: var(--text-muted);
+}
+
+.checkboxActive {
+  background-color: var(--primary) !important;
+  color: var(--on-primary) !important;
+  border-color: var(--primary) !important;
+}
+
+.exceptionInputRow {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.addExceptionBtn {
+  background-color: var(--primary);
+  color: var(--on-primary);
+  border: 1px solid var(--primary);
+  border-radius: var(--border-radius-DEFAULT);
+  padding: 0 16px;
+  font-size: var(--font-label-lg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.addExceptionBtn:hover {
+  background-color: var(--tertiary);
+}
+
+.exceptionList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px dashed var(--outline-variant);
+  border-radius: var(--border-radius-DEFAULT);
+  background-color: var(--surface-container-low);
+}
+
+.exceptionTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background-color: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-label-lg);
+  font-weight: 600;
+  color: var(--on-surface-variant);
+}
+
+.removeExceptionBtn {
+  background: none;
+  border: none;
+  color: var(--error);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.removeExceptionBtn:hover {
+  opacity: 0.8;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .checkboxGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

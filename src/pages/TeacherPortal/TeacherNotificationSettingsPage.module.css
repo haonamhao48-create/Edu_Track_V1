@@ -1,0 +1,157 @@
+/* =========================================================
+   Teacher Notification Settings Layout
+   ========================================================= */
+
+.pageRoot {
+  color: var(--on-surface);
+  background-color: var(--body-bg);
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.mainContent {
+  margin-left: 280px; /* Matches Sidebar width */
+  padding-top: 72px;  /* Matches Header height */
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--spacing-md) var(--spacing-sm);
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--border-radius-DEFAULT);
+  color: var(--tertiary);
+  font-weight: 700;
+  font-size: var(--font-label-lg);
+  cursor: pointer;
+  padding: 8px 16px;
+  align-self: flex-start;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 24px;
+}
+
+.backBtn:hover {
+  background-color: var(--surface-container-high);
+  border-color: var(--text-muted);
+  transform: translateX(-2px);
+}
+
+.pageHeader {
+  margin-bottom: 24px;
+}
+
+.pageTitle {
+  font-family: var(--font-family-display);
+  font-size: var(--font-headline-lg);
+  line-height: var(--line-height-headline-lg);
+  color: var(--on-surface);
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: -0.02em;
+}
+
+.pageSubtitle {
+  font-size: var(--font-body-md);
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* =========================================================
+   Content settings card
+   ========================================================= */
+
+.contentCard {
+  background-color: var(--surface-container-lowest);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--outline-variant);
+  box-shadow: var(--shadow-sm);
+  padding: 28px;
+}
+
+.togglesList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.toggleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--outline-variant);
+  padding-bottom: 16px;
+}
+
+.toggleRow:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.toggleText h6 {
+  font-family: var(--font-family-display);
+  font-size: var(--font-title-md);
+  font-weight: 700;
+  color: var(--on-surface);
+  margin-bottom: 2px;
+}
+
+.toggleText p {
+  font-size: var(--font-body-md);
+  color: var(--text-muted);
+}
+
+/* =========================================================
+   Utility Slide Switch Toggle
+   ========================================================= */
+
+.toggleSwitch {
+  width: 48px;
+  height: 24px;
+  border-radius: var(--border-radius-full);
+  background-color: var(--surface-container-highest);
+  border: 1px solid var(--outline-variant);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.switchHandle {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--border-radius-full);
+  background-color: var(--surface-container-lowest);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--outline-variant);
+}
+
+.switchActive {
+  background-color: var(--success);
+  border-color: var(--success);
+}
+
+.switchActive .switchHandle {
+  transform: translateX(24px);
+  border-color: var(--success);
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    margin-left: 0;
+    padding-top: 80px;
+  }
+}

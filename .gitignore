@@ -1,0 +1,32 @@
+# Node / Build outputs
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Environment variables
+.env
+.env.*
+
+# Markdown files
+*.md
+
+# Editor & IDE files
+.vscode/
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+
+# Agent-specific files
+.agents/
+.codex/
+.fk-skills/
+skills-lock.json
+*.agent.json
+*.skills-local.json
+*.skills-lock.json

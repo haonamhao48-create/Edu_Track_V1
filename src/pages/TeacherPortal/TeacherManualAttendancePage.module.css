@@ -1,0 +1,199 @@
+/* =========================================================
+   Teacher Manual Attendance Page Styles
+   ========================================================= */
+
+.classesRoot {
+  color: var(--on-surface);
+  background-color: var(--body-bg);
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.mainContent {
+  margin-left: 280px; /* Matches Sidebar width */
+  min-height: 100vh;
+  padding-top: 72px;  /* Matches Header height */
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: var(--spacing-md) var(--spacing-sm);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.leftHeader {
+  display: flex;
+  align-items: center;
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--border-radius-DEFAULT);
+  color: var(--tertiary);
+  font-weight: 700;
+  font-size: var(--font-label-lg);
+  cursor: pointer;
+  padding: 8px 16px;
+  align-self: flex-start;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.backBtn:hover {
+  background-color: var(--surface-container-high);
+  border-color: var(--text-muted);
+  transform: translateX(-2px);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.outlineBtn {
+  padding: 8px 16px;
+  border: 1px solid var(--outline-variant);
+  background-color: var(--surface-container-lowest);
+  color: var(--tertiary);
+  border-radius: var(--border-radius-DEFAULT);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: var(--font-label-lg);
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.outlineBtn:hover {
+  background-color: var(--surface-container-low);
+  border-color: var(--text-muted);
+}
+
+.primaryBtn {
+  padding: 8px 24px;
+  background-color: var(--primary);
+  border: 1px solid var(--primary);
+  color: var(--on-primary);
+  border-radius: var(--border-radius-DEFAULT);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: var(--font-label-lg);
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.primaryBtn:hover {
+  background-color: var(--tertiary);
+  border-color: var(--tertiary);
+}
+
+.content {
+  background-color: var(--surface-container-lowest);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--outline-variant);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.studentRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--outline-variant);
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.studentRow:last-child {
+  border-bottom: none;
+}
+
+.studentInfo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  background-color: var(--surface-container-highest);
+  color: var(--tertiary);
+  border-radius: var(--border-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-mono);
+  font-weight: 700;
+  font-size: 18px;
+  border: 1px solid var(--outline-variant);
+}
+
+.studentName {
+  font-size: var(--font-body-lg);
+  font-weight: 700;
+  color: var(--on-surface);
+  margin: 0;
+}
+
+.studentId {
+  color: var(--text-muted);
+  font-size: var(--font-label-lg);
+  margin: 4px 0 0 0;
+}
+
+.attendanceControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.radioGroup {
+  display: flex;
+  gap: 12px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  font-size: var(--font-body-md);
+  color: var(--on-surface-variant);
+}
+
+.noteBtn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--border-radius-DEFAULT);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.noteBtn:hover {
+  background-color: var(--surface-container-low);
+  color: var(--primary);
+}
+
+.hasNote {
+  color: var(--info) !important;
+}

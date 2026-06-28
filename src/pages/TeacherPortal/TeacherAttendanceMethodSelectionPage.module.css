@@ -1,0 +1,110 @@
+/* =========================================================
+   Teacher Attendance Selection Page Styles
+   ========================================================= */
+
+.classesRoot {
+  color: var(--on-surface);
+  background-color: var(--body-bg);
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.mainContent {
+  margin-left: 280px; /* Matches Sidebar width */
+  min-height: 100vh;
+  padding-top: 72px;  /* Matches Header height */
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: var(--spacing-md) var(--spacing-sm);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--border-radius-DEFAULT);
+  color: var(--tertiary);
+  font-weight: 700;
+  font-size: var(--font-label-lg);
+  cursor: pointer;
+  padding: 8px 16px;
+  align-self: flex-start;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.backBtn:hover {
+  background-color: var(--surface-container-high);
+  border-color: var(--text-muted);
+  transform: translateX(-2px);
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.methodCard {
+  background-color: var(--surface-container-lowest);
+  padding: 40px;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  cursor: pointer;
+  width: 300px;
+  transition: all var(--transition-fast);
+  border: 1px solid var(--outline-variant);
+}
+
+.methodCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
+}
+
+.iconWrapper {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  background-color: var(--surface-container-high);
+  color: var(--primary);
+  border-radius: var(--border-radius-DEFAULT);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--outline-variant);
+}
+
+.iconWrapper span {
+  font-size: 40px;
+}
+
+.methodCard h3 {
+  font-family: var(--font-family-display);
+  font-size: var(--font-title-lg);
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: var(--on-surface);
+}
+
+.methodCard p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+  font-size: var(--font-body-md);
+}

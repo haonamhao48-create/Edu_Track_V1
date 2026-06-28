@@ -1,0 +1,477 @@
+.root {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(0, 0, 0, 0.04), transparent 28%),
+    linear-gradient(180deg, #f7f6f3 0%, #fbfbfa 40%, #ffffff 100%);
+}
+
+.mainContent {
+  margin-left: 280px;
+  padding: calc(64px + var(--spacing-xl)) var(--spacing-xl) var(--spacing-xl);
+  max-width: 1480px;
+  margin-right: auto;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.heroCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.8fr);
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(244, 242, 237, 0.95)),
+    #ffffff;
+  box-shadow: 0 20px 60px rgba(17, 17, 17, 0.06);
+}
+
+.heroLead {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.pageTitle {
+  margin: 0;
+  font-family: var(--font-family-display);
+  font-size: clamp(34px, 4vw, 52px);
+  line-height: 1;
+  color: var(--on-surface);
+}
+
+.pageSubtitle {
+  max-width: 720px;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--on-surface-variant);
+}
+
+.heroMeta {
+  display: grid;
+  gap: var(--spacing-sm);
+}
+
+.metaBlock {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-lg);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(17, 17, 17, 0.08);
+}
+
+.metaBlock > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: var(--border-radius-lg);
+  background: #111111;
+  color: #ffffff;
+}
+
+.metaBlock p,
+.statCard p,
+.toolbarTop p,
+.packageLabel,
+.limitList span {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.metaBlock strong,
+.statCard strong,
+.limitList strong {
+  color: var(--on-surface);
+}
+
+.alertError {
+  padding: 14px 18px;
+  border-radius: var(--border-radius-md);
+  background: var(--error-bg);
+  color: var(--error);
+  border: 1px solid rgba(159, 47, 45, 0.16);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-md);
+}
+
+.statCard {
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--outline-variant);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: var(--shadow-md);
+}
+
+.statCard strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 28px;
+  line-height: 1.1;
+}
+
+.toolbarCard {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--outline-variant);
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.toolbarTop h3 {
+  margin: 0 0 6px;
+  font-size: 24px;
+}
+
+.searchBox {
+  flex: 0 0 320px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--outline);
+  background: #ffffff;
+}
+
+.searchBox span {
+  color: var(--text-muted);
+}
+
+.searchBox input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--on-surface);
+  font: inherit;
+}
+
+.emptyState {
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  border-radius: var(--border-radius-lg);
+  border: 1px dashed var(--outline);
+  background: rgba(255, 255, 255, 0.72);
+  text-align: center;
+  color: var(--on-surface-variant);
+}
+
+.emptyState span {
+  font-size: 40px;
+  color: var(--text-muted);
+}
+
+.spinner {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 4px solid rgba(17, 17, 17, 0.1);
+  border-top-color: #111111;
+  animation: spin 0.8s linear infinite;
+}
+
+.packageGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--spacing-md);
+  align-items: stretch;
+}
+
+.packageCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  min-height: 100%;
+  min-width: 0;
+  padding: 28px;
+  border-radius: var(--border-radius-lg);
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 246, 243, 0.96)),
+    #ffffff;
+  box-shadow: 0 18px 44px rgba(17, 17, 17, 0.05);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.packageCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 56px rgba(17, 17, 17, 0.08);
+}
+
+.enterpriseCard {
+  background: linear-gradient(180deg, #1e1e1e 0%, #111111 100%);
+  border-color: #2e2e2e;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.16);
+}
+
+.enterpriseCard h3,
+.enterpriseCard strong,
+.enterpriseCard .priceLine span {
+  color: #ffffff;
+}
+
+.enterpriseCard .packageLabel {
+  color: #c9b082; /* Elegant gold accent */
+  font-weight: 700;
+}
+
+.enterpriseCard .limitList span {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.enterpriseCard .limitList {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.enterpriseCard .capacityPill {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.cardHeader h3 {
+  margin: 8px 0 0;
+  font-size: clamp(24px, 2vw, 28px);
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.packageLabel {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.enterpriseBadge {
+  padding: 8px 12px;
+  max-width: 100%;
+  border-radius: 999px;
+  background: #c9b082;
+  color: #111111;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: normal;
+  text-align: center;
+}
+
+.priceLine {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-width: 0;
+}
+
+.priceLine strong {
+  min-width: 0;
+  font-size: clamp(24px, 2.8vw, 40px);
+  line-height: 0.95;
+  word-break: break-word;
+}
+
+.priceLine span {
+  margin-bottom: 4px;
+  line-height: 1.15;
+}
+
+.capacityPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  background: rgba(255, 255, 255, 0.56);
+  color: var(--on-surface);
+  font-weight: 600;
+}
+
+.limitList {
+  display: grid;
+  gap: 14px;
+  padding: 18px 0;
+  border-top: 1px solid rgba(17, 17, 17, 0.08);
+  border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+}
+
+.limitList > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.limitList > div span,
+.limitList > div strong {
+  word-break: break-word;
+}
+
+.cardFooter {
+  margin-top: auto;
+  display: grid;
+  gap: var(--spacing-sm);
+}
+
+.buyButton {
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  border-radius: 999px;
+  background: #111111;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.enterpriseCard .buyButton {
+  background: #ffffff;
+  color: #111111;
+  border-color: #ffffff;
+  font-weight: 700;
+}
+
+.enterpriseCard .buyButton:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.currentPlanBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  min-height: 52px;
+  padding: 14px 16px;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  border-radius: var(--border-radius-lg);
+  background: rgba(17, 17, 17, 0.04);
+}
+
+.currentPlanBox > span {
+  color: var(--success);
+  margin-top: 1px;
+}
+
+.currentPlanBox strong {
+  display: block;
+  font-size: 14px;
+  color: var(--on-surface);
+}
+
+.currentPlanBox p {
+  margin: 3px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.enterpriseCard .currentPlanBox {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.enterpriseCard .currentPlanBox > span {
+  color: #34d399;
+}
+
+.enterpriseCard .currentPlanBox strong {
+  color: #ffffff;
+}
+
+.enterpriseCard .currentPlanBox p {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.buyButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.buyButton:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 1200px) {
+  .heroCard {
+    grid-template-columns: 1fr;
+  }
+
+  .packageGrid {
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .packageGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 960px) {
+  .mainContent {
+    margin-left: 0;
+    padding: calc(64px + var(--spacing-lg)) var(--spacing-sm) var(--spacing-lg);
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbarCard {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .searchBox {
+    flex-basis: auto;
+    width: 100%;
+  }
+}

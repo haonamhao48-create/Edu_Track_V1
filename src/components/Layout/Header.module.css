@@ -1,0 +1,318 @@
+.header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 280px;
+  height: 72px;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--outline-variant);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--spacing-xl);
+  z-index: 40;
+}
+
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.title {
+  font-family: var(--font-family-display);
+  font-size: var(--font-title-lg);
+  font-weight: 700;
+  color: var(--on-surface);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.searchWrapper {
+  position: relative;
+  width: 320px;
+  transition: width var(--transition-normal);
+}
+
+.searchWrapper.searchFocused {
+  width: 380px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: var(--spacing-md);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px var(--spacing-md) 10px 44px;
+  background-color: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--border-radius-DEFAULT);
+  font-family: inherit;
+  font-size: var(--font-body-md);
+  outline: none;
+  transition: all var(--transition-fast);
+  color: var(--on-surface);
+}
+
+.searchInput:focus {
+  background-color: var(--surface-bright);
+  box-shadow: var(--focus-ring);
+  border-color: var(--primary);
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.iconButton {
+  position: relative;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  transition: color var(--transition-fast);
+}
+
+.iconButton:hover {
+  color: var(--primary);
+}
+
+.notificationBadge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: var(--error);
+  color: var(--surface-bright);
+  border-radius: var(--border-radius-full);
+  font-size: 9px;
+  font-weight: 700;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--surface-bright);
+}
+
+.profileSection {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding-left: var(--spacing-lg);
+  border-left: 1px solid var(--outline-variant);
+}
+
+.profileInfo {
+  text-align: right;
+}
+
+.profileName {
+  font-size: var(--font-title-md);
+  font-weight: 600;
+  color: var(--on-surface);
+  line-height: 1.2;
+}
+
+.profileRole {
+  font-size: var(--font-label-sm);
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.profileImage {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius-full);
+  border: 1px solid var(--outline-variant);
+  object-fit: cover;
+  box-shadow: var(--shadow-sm);
+}
+
+.profileInitialsAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius-full);
+  background-color: var(--surface-container-high);
+  color: var(--on-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: var(--font-label-lg);
+  border: 1px solid var(--outline-variant);
+}
+
+/* Notification Dropdown Styles */
+.notificationContainer {
+  position: relative;
+}
+
+.notiDropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: -80px;
+  width: 360px;
+  background-color: var(--surface-bright);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--outline-variant);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn var(--transition-fast) forwards;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.notiHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--outline-variant);
+}
+
+.notiTitle {
+  font-weight: 600;
+  font-size: var(--font-title-md);
+  color: var(--on-surface);
+}
+
+.markAllBtn {
+  font-size: var(--font-label-sm);
+  color: var(--on-surface);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.markAllBtn:hover {
+  color: var(--text-muted);
+}
+
+.notiList {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.notiItem {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--outline-variant);
+  background-color: var(--surface-bright);
+  transition: background-color var(--transition-fast);
+  cursor: pointer;
+  text-align: left;
+  border: none;
+  width: 100%;
+}
+
+.notiItem:hover {
+  background-color: var(--surface-container-low);
+}
+
+.notiItem:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+.notiUnread {
+  background-color: var(--info-bg);
+}
+
+.notiIcon {
+  font-size: 18px;
+  color: var(--info);
+  margin-top: 2px;
+}
+
+.notiContent {
+  flex: 1;
+}
+
+.notiSubject {
+  font-size: var(--font-body-md);
+  font-weight: 600;
+  color: var(--on-surface);
+  margin-bottom: 2px;
+}
+
+.notiBody {
+  font-size: var(--font-label-sm);
+  color: var(--on-surface-variant);
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.notiTime {
+  font-size: var(--font-label-sm);
+  color: var(--text-muted);
+}
+
+.emptyNoti {
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.emptyIcon {
+  font-size: 36px;
+  margin-bottom: var(--spacing-xs);
+  display: block;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .header {
+    left: 0;
+    padding: 0 var(--spacing-md);
+  }
+
+  .title {
+    display: none;
+  }
+
+  .searchWrapper {
+    width: 200px;
+  }
+  
+  .searchWrapper.searchFocused {
+    width: 240px;
+  }
+
+  .profileInfo {
+    display: none;
+  }
+
+  .notiDropdown {
+    right: -120px;
+    width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .searchWrapper {
+    width: 160px;
+  }
+  .searchWrapper.searchFocused {
+    width: 200px;
+  }
+}
+
