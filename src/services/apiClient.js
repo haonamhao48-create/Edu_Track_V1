@@ -14,6 +14,8 @@ const translateField = (field) => {
     'expertise': 'Chuyên môn',
     'logo': 'Logo',
     'imageUrl': 'Ảnh đại diện',
+    'DuplicateEmail': 'Email',
+    'DuplicateUserName': 'Tên đăng nhập',
   };
   const key = Object.keys(dict).find(k => k.toLowerCase() === field.toLowerCase());
   return key ? dict[key] : field;
@@ -21,6 +23,9 @@ const translateField = (field) => {
 
 const translateMessage = (msg) => {
   const lower = msg.toLowerCase();
+  if (lower.includes('is already taken') || lower.includes('already exists')) {
+    return 'đã tồn tại hoặc đã được sử dụng trên hệ thống';
+  }
   if (lower.includes('is required') || lower.includes('must not be empty')) {
     return 'không được để trống';
   }
@@ -146,17 +151,46 @@ const executeRequest = async (endpoint, options = {}) => {
         const title = errorJson.title || errorJson.Title;
         const errors = errorJson.errors || errorJson.Errors;
 
-        if (errors && typeof errors === 'object') {
+        if (errors) {
           validationErrors = errors;
-          errorMessage = Object.entries(errors)
-            .map(([field, msgs]) => {
-              const fieldName = translateField(field);
-              // Backend có thể trả về string hoặc string[], normalize về mảng
-              const msgsArr = Array.isArray(msgs) ? msgs : [String(msgs)];
-              const translatedMsgs = msgsArr.map(m => translateMessage(m)).join(', ');
-              return `${fieldName}: ${translatedMsgs}`;
-            })
-            .join('; ');
+          if (Array.isArray(errors)) {
+            errorMessage = errors
+              .map((err) => {
+                if (typeof err === 'object' && err !== null) {
+                  // ASP.NET Identity style: { code: '...', description: '...' }
+                  // FluentValidation style: { propertyName: '...', errorMessage: '...' }
+                  const field = err.propertyName || err.field || err.code || '';
+                  const msg = err.description || err.errorMessage || err.message || JSON.stringify(err);
+                  const translatedMsg = translateMessage(msg);
+                  
+                  // If translation is already a complete sentence (contains dots/ends with statement), return directly
+                  if (translatedMsg.endsWith('.') || translatedMsg.includes('đã được') || translatedMsg.includes('đã tồn tại')) {
+                    return translatedMsg;
+                  }
+                  const fieldName = field ? translateField(field) : '';
+                  return fieldName ? `${fieldName} ${translatedMsg}.` : `${translatedMsg}.`;
+                }
+                return String(err);
+              })
+              .filter(Boolean)
+              .join('; ');
+          } else if (typeof errors === 'object') {
+            errorMessage = Object.entries(errors)
+              .map(([field, msgs]) => {
+                const fieldName = translateField(field);
+                const msgsArr = Array.isArray(msgs) ? msgs : [String(msgs)];
+                return msgsArr.map(m => {
+                  const translatedMsg = translateMessage(m);
+                  if (translatedMsg.endsWith('.') || translatedMsg.includes('đã được') || translatedMsg.includes('đã tồn tại')) {
+                    return translatedMsg;
+                  }
+                  return fieldName ? `${fieldName} ${translatedMsg}.` : `${translatedMsg}.`;
+                }).join(' ');
+              })
+              .join('; ');
+          } else {
+            errorMessage = String(errors);
+          }
         } else {
           errorMessage = detail || msg || title || errorMessage;
         }

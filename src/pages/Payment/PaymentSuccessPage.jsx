@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { invoiceService } from '../../services/invoiceService';
+import { centerDashboardService } from '../../services/centerDashboardService';
 import { getPaymentReturnPageForRole } from '../../utils/roleNavigation';
 import styles from './PaymentSuccessPage.module.css';
 
@@ -14,6 +15,9 @@ const PaymentSuccessPage = ({ onNavigate }) => {
   const [orderCode, setOrderCode] = useState('');
   const [message, setMessage] = useState('Đang kết nối để xác nhận giao dịch...');
   const [isSuccessState, setIsSuccessState] = useState(false);
+  const [returnPage, setReturnPage] = useState('finance');
+  const [buttonLabel, setButtonLabel] = useState('Quay lại trang tài chính');
+  const [isSubscription, setIsSubscription] = useState(false);
 
   const userStr = localStorage.getItem('user');
   let user = null;
@@ -24,7 +28,23 @@ const PaymentSuccessPage = ({ onNavigate }) => {
   }
 
   const originRole = sessionStorage.getItem('payos_origin_role') || user?.role;
-  const returnPage = getPaymentReturnPageForRole(originRole);
+  const [countdown, setCountdown] = useState(5);
+
+  useEffect(() => {
+    if (isSuccessState && !loading) {
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            onNavigate(returnPage);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [isSuccessState, loading, returnPage, onNavigate]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -37,58 +57,136 @@ const PaymentSuccessPage = ({ onNavigate }) => {
       return;
     }
 
-    const cachedInvoiceId = sessionStorage.getItem(`payos_order_${code}`);
-    if (!cachedInvoiceId) {
-      setLoading(false);
-      setIsSuccessState(true);
-      setMessage(`Giao dịch #${code} đã thanh toán thành công.`);
-      return;
+    const pendingOrderCode = sessionStorage.getItem('payos_pending_order_code');
+    const isSub = (sessionStorage.getItem('payos_payment_type') === 'subscription' && pendingOrderCode === String(code))
+                  || (user?.role === 'Center' || user?.role === 'Admin');
+    setIsSubscription(isSub);
+
+    let resolvedReturnPage = 'finance';
+    let resolvedButtonLabel = 'Quay lại trang tài chính';
+
+    if (isSub) {
+      resolvedReturnPage = getPaymentReturnPageForRole(originRole);
+      resolvedButtonLabel = resolvedReturnPage === 'admin-subscriptions'
+        ? 'Quay lại trang quản lý gói đăng ký'
+        : 'Quay lại trang gói đăng ký';
     }
+    setReturnPage(resolvedReturnPage);
+    setButtonLabel(resolvedButtonLabel);
+
+    const cleanSessionData = () => {
+      sessionStorage.removeItem(`payos_order_${code}`);
+      sessionStorage.removeItem('payos_origin_role');
+      sessionStorage.removeItem('payos_payment_type');
+      sessionStorage.removeItem('payos_pending_order_code');
+      sessionStorage.removeItem('payos_pending_package_id');
+      sessionStorage.removeItem('payos_pending_center_id');
+    };
 
     let attempts = 0;
     const maxAttempts = 10;
 
-    const pollInvoice = async () => {
-      attempts += 1;
-      setMessage(`Đang kiểm tra trạng thái thanh toán từ máy chủ... (${attempts}/${maxAttempts})`);
+    if (isSub) {
+      const pendingCenterId = sessionStorage.getItem('payos_pending_center_id');
+      const pendingPackageId = sessionStorage.getItem('payos_pending_package_id');
 
-      try {
-        const response = await invoiceService.getInvoiceDetail(cachedInvoiceId);
-        const status = String(response?.status || '').toUpperCase();
-
-        if (status === 'PAID') {
-          setInvoice(response);
-          setIsSuccessState(true);
-          setMessage('Thanh toán thành công!');
-          setLoading(false);
-          sessionStorage.removeItem(`payos_order_${code}`);
-          sessionStorage.removeItem('payos_origin_role');
-          return;
-        }
-
-        if (attempts >= maxAttempts) {
-          setInvoice(response);
-          setIsSuccessState(true);
-          setMessage('Giao dịch đã được ghi nhận và đang chờ đồng bộ trạng thái cuối cùng.');
-          setLoading(false);
-          sessionStorage.removeItem(`payos_order_${code}`);
-          sessionStorage.removeItem('payos_origin_role');
-          return;
-        }
-
-        setTimeout(pollInvoice, 2000);
-      } catch (error) {
-        if (attempts >= maxAttempts) {
-          setLoading(false);
-          setMessage('Không thể tự động xác nhận trạng thái hóa đơn. Vui lòng kiểm tra lại trong lịch sử hóa đơn.');
-        } else {
-          setTimeout(pollInvoice, 2000);
-        }
+      if (!pendingCenterId || !pendingPackageId) {
+        setLoading(false);
+        setIsSuccessState(true);
+        setMessage(`Giao dịch đăng ký #${code} đã thanh toán thành công.`);
+        cleanSessionData();
+        return;
       }
-    };
 
-    pollInvoice();
-  }, []);
+      const pollSubscription = async () => {
+        attempts += 1;
+        setMessage(`Đang kiểm tra gói đăng ký từ máy chủ... (${attempts}/${maxAttempts})`);
+
+        try {
+          const response = await centerDashboardService.getCurrentSubscription(pendingCenterId);
+          const currentPackageId = String(response?.packageId || '');
+          const status = String(response?.status || '').toUpperCase();
+
+          if (currentPackageId === String(pendingPackageId) && status === 'ACTIVE') {
+            setIsSuccessState(true);
+            setMessage('Giao dịch đăng ký gói đã được kích hoạt thành công!');
+            setLoading(false);
+            cleanSessionData();
+            return;
+          }
+
+          if (attempts >= maxAttempts) {
+            setIsSuccessState(true);
+            setMessage('Giao dịch mua gói đã hoàn tất. Gói cước sẽ được cập nhật trong ít phút.');
+            setLoading(false);
+            cleanSessionData();
+            return;
+          }
+
+          setTimeout(pollSubscription, 2000);
+        } catch (error) {
+          if (attempts >= maxAttempts) {
+            setLoading(false);
+            setMessage('Không thể tự động xác nhận trạng thái gói cước. Vui lòng kiểm tra lại trang quản lý gói.');
+            cleanSessionData();
+          } else {
+            setTimeout(pollSubscription, 2000);
+          }
+        }
+      };
+
+      pollSubscription();
+    } else {
+      const cachedInvoiceId = sessionStorage.getItem(`payos_order_${code}`);
+      if (!cachedInvoiceId) {
+        setLoading(false);
+        setIsSuccessState(true);
+        setMessage(`Giao dịch học phí #${code} đã thanh toán thành công.`);
+        cleanSessionData();
+        return;
+      }
+
+      const pollInvoice = async () => {
+        attempts += 1;
+        setMessage(`Đang kiểm tra trạng thái học phí... (${attempts}/${maxAttempts})`);
+
+        try {
+          const response = await invoiceService.getInvoiceDetail(cachedInvoiceId);
+          const status = String(response?.status || '').toUpperCase();
+
+          if (status === 'PAID') {
+            setInvoice(response);
+            setIsSuccessState(true);
+            setMessage('Thanh toán học phí thành công!');
+            setLoading(false);
+            cleanSessionData();
+            return;
+          }
+
+          if (attempts >= maxAttempts) {
+            setInvoice(response);
+            setIsSuccessState(true);
+            setMessage('Giao dịch học phí đã thành công và đang chờ đồng bộ.');
+            setLoading(false);
+            cleanSessionData();
+            return;
+          }
+
+          setTimeout(pollInvoice, 2000);
+        } catch (error) {
+          if (attempts >= maxAttempts) {
+            setLoading(false);
+            setMessage('Không thể tự động xác nhận hóa đơn học phí. Vui lòng kiểm tra lại trong lịch sử hóa đơn.');
+            cleanSessionData();
+          } else {
+            setTimeout(pollInvoice, 2000);
+          }
+        }
+      };
+
+      pollInvoice();
+    }
+  }, [originRole]);
 
   return (
     <div className={styles.pageRoot}>
@@ -145,7 +243,7 @@ const PaymentSuccessPage = ({ onNavigate }) => {
 
             <div className={styles.actions}>
               <button className={styles.btnPrimary} onClick={() => onNavigate(returnPage)}>
-                Quay lại trang tài chính
+                {buttonLabel} ({countdown}s)
               </button>
             </div>
           </div>
@@ -158,7 +256,7 @@ const PaymentSuccessPage = ({ onNavigate }) => {
             <p className={styles.errorText}>{message}</p>
             <div className={styles.actions}>
               <button className={styles.btnPrimary} onClick={() => onNavigate(returnPage)}>
-                Quay lại trang tài chính
+                {buttonLabel}
               </button>
             </div>
           </div>

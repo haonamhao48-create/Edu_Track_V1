@@ -9,19 +9,19 @@ const ROLE_CONFIG = {
   Center: {
     label: 'Trung tâm',
     icon: 'school',
-    inputLabel: 'Tên đăng nhập',
+    inputLabel: 'Tên đăng nhập hoặc Gmail',
     inputType: 'text',
     inputIcon: 'person',
-    placeholder: 'Nhập tên đăng nhập',
+    placeholder: 'Nhập tên đăng nhập hoặc gmail',
     submitLabel: 'Đăng nhập Trung tâm',
   },
   Teacher: {
     label: 'Giảng viên',
     icon: 'person',
-    inputLabel: 'Tên đăng nhập',
+    inputLabel: 'Tên đăng nhập hoặc Gmail',
     inputType: 'text',
     inputIcon: 'person',
-    placeholder: 'Nhập tên đăng nhập',
+    placeholder: 'Nhập tên đăng nhập hoặc gmail',
     submitLabel: 'Đăng nhập Giảng viên',
   },
 };
@@ -139,7 +139,7 @@ const LoginPage = ({ onNavigate }) => {
 
     const trimmedUsername = username.trim();
     if (!trimmedUsername) {
-      setErrorMsg('Vui lòng nhập tên đăng nhập.');
+      setErrorMsg('Vui lòng nhập tên đăng nhập hoặc gmail.');
       return;
     }
 

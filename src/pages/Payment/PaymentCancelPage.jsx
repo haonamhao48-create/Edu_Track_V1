@@ -4,6 +4,8 @@ import styles from './PaymentCancelPage.module.css';
 
 const PaymentCancelPage = ({ onNavigate }) => {
   const [orderCode, setOrderCode] = useState('');
+  const [returnPage, setReturnPage] = useState('finance');
+  const [buttonLabel, setButtonLabel] = useState('Quay lại trang tài chính');
 
   const userStr = localStorage.getItem('user');
   let user = null;
@@ -14,18 +16,44 @@ const PaymentCancelPage = ({ onNavigate }) => {
   }
 
   const originRole = sessionStorage.getItem('payos_origin_role') || user?.role;
-  const returnPage = getPaymentReturnPageForRole(originRole);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('orderCode') || '';
     setOrderCode(code);
 
+    const pendingOrderCode = sessionStorage.getItem('payos_pending_order_code');
+    const isSub = (sessionStorage.getItem('payos_payment_type') === 'subscription' && pendingOrderCode === String(code))
+                  || (user?.role === 'Center' || user?.role === 'Admin');
+
+    let resolvedReturnPage = 'finance';
+    let resolvedButtonLabel = 'Quay lại trang tài chính';
+
+    if (isSub) {
+      resolvedReturnPage = getPaymentReturnPageForRole(originRole);
+      resolvedButtonLabel = resolvedReturnPage === 'admin-subscriptions'
+        ? 'Quay lại trang quản lý gói đăng ký'
+        : 'Quay lại trang gói đăng ký';
+    }
+    setReturnPage(resolvedReturnPage);
+    setButtonLabel(resolvedButtonLabel);
+
     if (code) {
       sessionStorage.removeItem(`payos_order_${code}`);
     }
     sessionStorage.removeItem('payos_origin_role');
-  }, []);
+    sessionStorage.removeItem('payos_payment_type');
+    sessionStorage.removeItem('payos_pending_order_code');
+    sessionStorage.removeItem('payos_pending_package_id');
+    sessionStorage.removeItem('payos_pending_center_id');
+
+    // Tự động chuyển hướng sau 100ms để đảm bảo React hoàn tất render/commit phase
+    const timer = setTimeout(() => {
+      onNavigate(resolvedReturnPage);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [originRole, onNavigate]);
 
   return (
     <div className={styles.pageRoot}>
@@ -55,7 +83,7 @@ const PaymentCancelPage = ({ onNavigate }) => {
 
           <div className={styles.actions}>
             <button className={styles.btnPrimary} onClick={() => onNavigate(returnPage)}>
-              Quay lại trang tài chính
+              {buttonLabel}
             </button>
           </div>
         </div>

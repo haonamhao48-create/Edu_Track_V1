@@ -23,8 +23,23 @@ const RegisterPage = ({ onNavigate }) => {
       return;
     }
 
+    const phone = form.phone.value.trim().replace(/\s+/g, '');
+    const phoneRegex = /^(0|84|\+84)(3|5|7|8|9)\d{8}$/;
+    if (!phoneRegex.test(phone)) {
+      setErrorMsg('Số điện thoại không đúng định dạng Việt Nam (ví dụ: 0912345678).');
+      return;
+    }
+
     const password = form.password.value;
     const confirm_password = form.confirm_password.value;
+
+    // Password must be at least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      setErrorMsg('Mật khẩu phải từ 8 ký tự trở lên, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (ví dụ: @$!%*?&).');
+      return;
+    }
+
     if (password !== confirm_password) {
       setErrorMsg('Mật khẩu và Xác nhận mật khẩu không khớp.');
       return;

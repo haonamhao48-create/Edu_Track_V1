@@ -160,6 +160,10 @@ const CenterSubscriptionsPage = () => {
       }
 
       sessionStorage.setItem('payos_origin_role', 'Center');
+      sessionStorage.setItem('payos_payment_type', 'subscription');
+      sessionStorage.setItem('payos_pending_order_code', String(orderCode));
+      sessionStorage.setItem('payos_pending_package_id', pkg.id);
+      sessionStorage.setItem('payos_pending_center_id', centerId);
       if (orderCode && invoiceId) {
         sessionStorage.setItem(`payos_order_${orderCode}`, invoiceId);
       }

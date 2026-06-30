@@ -51,7 +51,13 @@ const Sidebar = ({ activePage = 'dashboard', onNavigate }) => {
 
   return (
     <aside className={styles.sidebar}>
-      <div className={styles.logoSection}>
+      <div
+        className={styles.logoSection}
+        onClick={() => {
+          const dashboardPage = role === 'Teacher' ? 'teacher-dashboard' : role === 'Admin' ? 'admin-dashboard' : 'dashboard';
+          onNavigate?.(dashboardPage);
+        }}
+      >
         <img
           alt="EduTrack Logo"
           className={styles.logoImg}

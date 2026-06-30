@@ -1,5 +1,6 @@
 .root {
-  min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
   background:
     radial-gradient(circle at top left, rgba(0, 0, 0, 0.04), transparent 28%),
     linear-gradient(180deg, #f7f6f3 0%, #fbfbfa 40%, #ffffff 100%);

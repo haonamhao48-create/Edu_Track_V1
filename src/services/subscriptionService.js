@@ -54,6 +54,7 @@ export const subscriptionService = {
 
   getCenterPackages: async () => {
     return tryRequestVariants([
+      () => apiClient('/finance/subscriptions/packages', { method: 'GET' }),
       () => apiClient('/center/subscription-packages', { method: 'GET' }),
       () => apiClient('/subscriptions/packages', { method: 'GET' }),
       () => apiClient('/subscription-packages', { method: 'GET' }),

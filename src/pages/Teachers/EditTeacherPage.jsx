@@ -14,7 +14,7 @@ const EditTeacherPage = ({ onNavigate }) => {
   const [fullName, setFullName] = useState('');
   const [gender, setGender] = useState('Nam');
   const [address, setAddress] = useState('');
-  const [expertise, setExpertise] = useState('Tiếng Anh');
+  const [expertise, setExpertise] = useState('');
   
   // Read-only fields
   const [email, setEmail] = useState('');
@@ -107,7 +107,7 @@ const EditTeacherPage = ({ onNavigate }) => {
       const updatedData = {
         fullName,
         address: address || null,
-        expertise: expertise || 'Tiếng Anh',
+        expertise: expertise || '',
         gender,
       };
 
@@ -289,14 +289,8 @@ const EditTeacherPage = ({ onNavigate }) => {
                         type="text"
                         value={expertise}
                         onChange={(e) => setExpertise(e.target.value)}
-                        placeholder="Ví dụ: Tiếng Anh, Toán học..."
-                        list="expertises-list"
+                        placeholder="Chuyên ngành"
                       />
-                      <datalist id="expertises-list">
-                        {expertises.map((exp, idx) => (
-                          <option key={idx} value={exp} />
-                        ))}
-                      </datalist>
                     </div>
                   </div>
                 </section>

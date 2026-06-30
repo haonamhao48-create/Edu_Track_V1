@@ -111,6 +111,12 @@
   gap: var(--spacing-sm);
   padding-left: var(--spacing-lg);
   border-left: 1px solid var(--outline-variant);
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.profileSection:hover {
+  opacity: 0.8;
 }
 
 .profileInfo {

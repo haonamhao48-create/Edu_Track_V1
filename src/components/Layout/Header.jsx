@@ -255,7 +255,16 @@ const Header = ({ onNavigate }) => {
           )}
         </div>
 
-        <div className={styles.profileSection}>
+        <div
+          className={styles.profileSection}
+          onClick={() => {
+            if (role === 'Center') {
+              onNavigate?.('settings');
+            } else if (role === 'Teacher') {
+              onNavigate?.('teacher-profile');
+            }
+          }}
+        >
           <div className={styles.profileInfo}>
             <p className={styles.profileName}>{displayName}</p>
             <p className={styles.profileRole}>{getRoleLabel(role)}</p>

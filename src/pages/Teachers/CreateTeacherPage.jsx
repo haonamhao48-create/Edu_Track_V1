@@ -9,7 +9,7 @@ const CreateTeacherPage = ({ onNavigate }) => {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [gender, setGender] = useState('Nam');
-  const [expertise, setExpertise] = useState('Tiếng Anh');
+  const [expertise, setExpertise] = useState('');
   const [address, setAddress] = useState('');
   const [expertises, setExpertises] = useState([]);
   
@@ -78,7 +78,7 @@ const CreateTeacherPage = ({ onNavigate }) => {
         phone: cleanPhone,
         email,
         gender,
-        expertise: expertise || 'Tiếng Anh',
+        expertise: expertise || '',
         address: address || null,
       };
 
@@ -194,7 +194,6 @@ const CreateTeacherPage = ({ onNavigate }) => {
                 </div>
               </div>
             </section>
-
             {/* Section 2: Teaching Information */}
             <section className={styles.formSection}>
               <div className={styles.sectionHeader}>
@@ -206,18 +205,12 @@ const CreateTeacherPage = ({ onNavigate }) => {
                   <label className={styles.inputLabel}>Môn học chuyên môn <span className={styles.textError}>*</span></label>
                   <input
                     className={styles.inputField}
-                    placeholder="Ví dụ: Tiếng Anh, Toán học, IELTS 7.5..."
+                    placeholder="Chuyên ngành"
                     required
                     type="text"
                     value={expertise}
                     onChange={(e) => setExpertise(e.target.value)}
-                    list="expertises-list"
                   />
-                  <datalist id="expertises-list">
-                    {expertises.map((exp, idx) => (
-                      <option key={idx} value={exp} />
-                    ))}
-                  </datalist>
                 </div>
                 <div>
                   <label className={styles.inputLabel}>Trung tâm trực thuộc</label>
