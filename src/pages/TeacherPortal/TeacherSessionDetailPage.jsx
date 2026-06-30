@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { toast } from 'react-hot-toast';
 import { attendanceService } from '../../services/attendanceService';
 import { assessmentService } from '../../services/assessmentService';
@@ -66,6 +67,7 @@ const TeacherSessionDetailPage = ({ onNavigate }) => {
     content: '',
   });
   const [selectedQuickComments, setSelectedQuickComments] = useState([]);
+  const [feedbackError, setFeedbackError] = useState('');
 
   useEffect(() => {
     if (scheduleId && classId) {
@@ -139,10 +141,14 @@ const TeacherSessionDetailPage = ({ onNavigate }) => {
   const loadSessionDetail = async () => {
     setLoading(true);
     try {
-      const [scheduleRes, studentsRes, commentsRes] = await Promise.all([
+      // 1. Fetch main schedule data, student enrollment list, comments, and related attendance sessions concurrently.
+      // If initialAttendanceSessionId is already known, we also fetch the records concurrently.
+      const [scheduleRes, studentsRes, commentsRes, attendanceSessionsRes, directRecordsRes] = await Promise.all([
         scheduleService.getScheduleById(scheduleId),
         studentService.getStudentsByClass(classId),
         assessmentService.getCommentsBySchedule(scheduleId).catch(() => []),
+        initialAttendanceSessionId ? Promise.resolve([]) : attendanceService.getSessionsByClass(classId).catch(() => []),
+        initialAttendanceSessionId ? attendanceService.getRecordsBySession(initialAttendanceSessionId).catch(() => []) : Promise.resolve([]),
       ]);
 
       const scheduleData = scheduleRes?.data || scheduleRes;
@@ -159,7 +165,6 @@ const TeacherSessionDetailPage = ({ onNavigate }) => {
 
       let resolvedAttendanceSessionId = initialAttendanceSessionId || '';
       if (!resolvedAttendanceSessionId) {
-        const attendanceSessionsRes = await attendanceService.getSessionsByClass(classId).catch(() => []);
         const attendanceSessions = Array.isArray(attendanceSessionsRes)
           ? attendanceSessionsRes
           : (attendanceSessionsRes?.data || []);
@@ -177,11 +182,44 @@ const TeacherSessionDetailPage = ({ onNavigate }) => {
 
       setAttendanceSessionId(resolvedAttendanceSessionId);
 
-      if (resolvedAttendanceSessionId) {
+      // 2. Load attendance records (use pre-fetched records if available, otherwise fetch them)
+      if (initialAttendanceSessionId) {
+        setRecords(Array.isArray(directRecordsRes) ? directRecordsRes : (directRecordsRes?.data || []));
+      } else if (resolvedAttendanceSessionId) {
         const recordsRes = await attendanceService.getRecordsBySession(resolvedAttendanceSessionId).catch(() => []);
         setRecords(Array.isArray(recordsRes) ? recordsRes : (recordsRes?.data || []));
       } else {
         setRecords([]);
+      }
+
+      // Check if we need to auto-open feedback modal for a specific student
+      const autoStudentId = urlParams.get('studentId');
+      if (autoStudentId && initialTab === 'feedback') {
+        const studentIdNorm = normalizeId(autoStudentId);
+        const enrichedStudentList = studentList.map(student => {
+          const resolvedStudentId = getStudentId(student);
+          const comment = commentList.find(c => normalizeId(c.studentId) === resolvedStudentId);
+          const note = comment?.content || comment?.note || '';
+          const behaviorRating = comment?.behaviorRating || '';
+          const isEvaluated = Boolean(
+            note.trim() ||
+            behaviorRating.trim() ||
+            comment?.feedbackStatus === 'EVALUATED'
+          );
+          return {
+            ...student,
+            resolvedStudentId,
+            note,
+            behaviorRating,
+            isEvaluated
+          };
+        });
+        const matched = enrichedStudentList.find(s => s.resolvedStudentId === studentIdNorm);
+        if (matched) {
+          setTimeout(() => {
+            openFeedbackModal(matched);
+          }, 150);
+        }
       }
     } catch (err) {
       console.error('Error loading session details:', err);
@@ -194,6 +232,7 @@ const TeacherSessionDetailPage = ({ onNavigate }) => {
   const openFeedbackModal = (student) => {
     const initialContent = student.note || '';
     setSelectedStudent(student);
+    setFeedbackError('');
     setFeedbackForm({
       scheduleId: scheduleId || '',
       studentId: student.resolvedStudentId || getStudentId(student),
@@ -231,30 +270,78 @@ const TeacherSessionDetailPage = ({ onNavigate }) => {
 
   const handleSubmitFeedback = async (event) => {
     event.preventDefault();
+    setFeedbackError('');
 
-    if (!feedbackForm.scheduleId || !feedbackForm.studentId || !feedbackForm.content.trim()) {
-      toast.error('Vui lòng nhập đầy đủ dữ liệu nhận xét.');
+    const resolvedScheduleId = feedbackForm.scheduleId || scheduleId || '';
+    const resolvedStudentId = feedbackForm.studentId || '';
+    const resolvedContent = feedbackForm.content.trim();
+
+    if (!resolvedScheduleId) {
+      const msg = 'Không xác định được buổi học. Vui lòng quay lại và thử lại.';
+      setFeedbackError(msg);
+      toast.error(msg);
       return;
     }
 
+    if (!resolvedStudentId) {
+      const msg = 'Không xác định được học sinh. Vui lòng thử lại.';
+      setFeedbackError(msg);
+      toast.error(msg);
+      return;
+    }
+
+    if (!resolvedContent) {
+      const msg = 'Vui lòng nhập nội dung nhận xét.';
+      setFeedbackError(msg);
+      toast.error(msg);
+      return;
+    }
+
+    // Kiểm tra xem học sinh này đã có nhận xét chưa trong buổi học này
+    const existingComment = latestCommentsByStudent[normalizeId(resolvedStudentId)];
+    const existingCommentId = existingComment?.id || existingComment?.commentId || null;
+
     setSavingFeedback(true);
     try {
-      await assessmentService.createComment({
-        scheduleId: feedbackForm.scheduleId,
-        studentId: feedbackForm.studentId,
-        content: feedbackForm.content.trim(),
-        behaviorRating: feedbackForm.behaviorRating,
-      });
+      const safeRating = feedbackForm.behaviorRating || 'Good';
 
-      const commentsRes = await assessmentService.getCommentsBySchedule(scheduleId).catch(() => []);
+      if (existingCommentId) {
+        // Đã có nhận xét → gọi UPDATE (PUT)
+        await assessmentService.updateComment(existingCommentId, {
+          content: resolvedContent,
+          behaviorRating: safeRating,
+        });
+      } else {
+        // Chưa có → gọi CREATE (POST)
+        await assessmentService.createComment({
+          scheduleId: resolvedScheduleId,
+          studentId: resolvedStudentId,
+          content: resolvedContent,
+          behaviorRating: safeRating,
+        });
+      }
+
+      // Reload danh sách nhận xét sau khi lưu
+      const commentsRes = await assessmentService.getCommentsBySchedule(resolvedScheduleId).catch(() => []);
       setComments(Array.isArray(commentsRes) ? commentsRes : (commentsRes?.data || []));
 
-      toast.success('Đã gửi nhận xét thành công.');
+      toast.success(existingCommentId ? 'Đã cập nhật nhận xét thành công.' : 'Đã gửi nhận xét thành công.');
       setShowFeedbackModal(false);
       setSelectedStudent(null);
+      setFeedbackError('');
     } catch (err) {
-      console.error('Error creating feedback:', err);
-      toast.error('Không thể gửi nhận xét. Vui lòng thử lại.');
+      console.error('Error saving feedback:', err);
+
+      // Nếu vẫn bị 409 (không tìm được existingCommentId đúng) → thử fallback update qua query
+      if (err?.status === 409) {
+        const msg = 'Nhận xét đã tồn tại cho học sinh này trong buổi học. Vui lòng tải lại trang và thử sửa nhận xét.';
+        setFeedbackError(msg);
+        toast.error(msg);
+      } else {
+        const errMsg = err?.message || 'Không thể lưu nhận xét. Vui lòng thử lại.';
+        setFeedbackError(errMsg);
+        toast.error(errMsg);
+      }
     } finally {
       setSavingFeedback(false);
     }
@@ -419,13 +506,29 @@ const TeacherSessionDetailPage = ({ onNavigate }) => {
                                 )}
                               </div>
                             </div>
-                            <button
-                              className={styles.commentIconBtn}
-                              title="Nhận xét học sinh"
-                              onClick={() => openFeedbackModal(student)}
-                            >
-                              <span className="material-symbols-outlined notranslate" translate="no">rate_review</span>
-                            </button>
+
+                            <div className={styles.studentActions}>
+                              {!student.isEvaluated && (
+                                <button
+                                  className={styles.createFeedbackBtn}
+                                  title="Thêm nhận xét"
+                                  onClick={() => openFeedbackModal(student)}
+                                >
+                                  <span className="material-symbols-outlined notranslate" translate="no">rate_review</span>
+                                  Nhận xét
+                                </button>
+                              )}
+                              {student.isEvaluated && (
+                                <button
+                                  className={styles.updateFeedbackBtn}
+                                  title="Cập nhật nhận xét"
+                                  onClick={() => openFeedbackModal(student)}
+                                >
+                                  <span className="material-symbols-outlined notranslate" translate="no">edit_note</span>
+                                  Cập nhật
+                                </button>
+                              )}
+                            </div>
                           </div>
                         ))
                       )}
@@ -438,12 +541,12 @@ const TeacherSessionDetailPage = ({ onNavigate }) => {
         </div>
       </main>
 
-      {showFeedbackModal && selectedStudent && (
+      {showFeedbackModal && selectedStudent && createPortal(
         <div className={styles.modalOverlay} onClick={() => setShowFeedbackModal(false)}>
           <div className={styles.modalCard} onClick={(event) => event.stopPropagation()}>
             <div className={styles.modalHeader}>
               <div>
-                <h4>Tạo nhận xét học sinh</h4>
+                <h4>{selectedStudent.isEvaluated ? 'Cập nhật nhận xét' : 'Tạo nhận xét học sinh'}</h4>
                 <p>{selectedStudent.fullName || selectedStudent.name}</p>
               </div>
               <button className={styles.closeBtn} onClick={() => setShowFeedbackModal(false)}>
@@ -487,10 +590,11 @@ const TeacherSessionDetailPage = ({ onNavigate }) => {
                   value={feedbackForm.behaviorRating}
                   onChange={(event) => setFeedbackForm((prev) => ({ ...prev, behaviorRating: event.target.value }))}
                 >
-                  <option value="Excellent">Excellent</option>
-                  <option value="Good">Good</option>
-                  <option value="Average">Average</option>
-                  <option value="Bad">Bad</option>
+                  <option value="Excellent">Xuất sắc</option>
+                  <option value="Good">Tốt</option>
+                  <option value="Average">Trung bình</option>
+                  <option value="Poor">Yếu</option>
+                  <option value="Very Poor">Rất yếu</option>
                 </select>
               </label>
 
@@ -512,17 +616,41 @@ const TeacherSessionDetailPage = ({ onNavigate }) => {
                 </div>
               )}
 
+              {feedbackError && (
+                <div style={{
+                  background: 'var(--error-bg, #fdebec)',
+                  color: 'var(--error, #9f2f2d)',
+                  border: '1px solid #f5c2c7',
+                  borderRadius: '6px',
+                  padding: '10px 14px',
+                  fontSize: '13px',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '8px',
+                  marginBottom: '4px',
+                }}>
+                  <span className="material-symbols-outlined notranslate" translate="no" style={{ fontSize: '16px', flexShrink: 0, marginTop: '1px' }}>error</span>
+                  <span>{feedbackError}</span>
+                </div>
+              )}
+
               <div className={styles.formActions}>
                 <button type="button" className={styles.cancelBtn} onClick={() => setShowFeedbackModal(false)}>
                   Hủy
                 </button>
                 <button type="submit" className={styles.submitBtn} disabled={savingFeedback || !feedbackForm.content.trim()}>
-                  {savingFeedback ? 'Đang gửi...' : 'Gửi nhận xét'}
+                  {savingFeedback
+                    ? 'Đang lưu...'
+                    : selectedStudent?.isEvaluated
+                      ? 'Cập nhật nhận xét'
+                      : 'Gửi nhận xét'
+                  }
                 </button>
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

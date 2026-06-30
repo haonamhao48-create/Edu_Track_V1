@@ -71,9 +71,9 @@
   /* =========================================================
      TYPOGRAPHY (Editorial Serif Display + Clean Sans Body)
      ========================================================= */
-  --font-family-display: 'Playfair Display', 'Newsreader', 'Instrument Serif', Georgia, serif;
-  --font-family-body: 'Manrope', 'SF Pro Display', 'Geist Sans', 'Helvetica Neue', 'Switzer', system-ui, sans-serif;
-  --font-family-mono: 'Geist Mono', 'SF Mono', 'JetBrains Mono', monospace;
+  --font-family-display: 'Be Vietnam Pro', 'Inter', 'Segoe UI', Arial, sans-serif;
+  --font-family-body: 'Inter', 'Be Vietnam Pro', 'Segoe UI', Arial, sans-serif;
+  --font-family-mono: 'Geist Mono', 'SF Mono', 'Consolas', monospace;
 
   --font-headline-lg: 32px;
   --line-height-headline-lg: 1.1;

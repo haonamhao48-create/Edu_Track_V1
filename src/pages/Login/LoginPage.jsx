@@ -9,31 +9,23 @@ const ROLE_CONFIG = {
   Center: {
     label: 'Trung tâm',
     icon: 'school',
-    inputLabel: 'Địa chỉ Email',
-    inputType: 'email',
-    inputIcon: 'mail',
-    placeholder: 'admin@edutrack.com',
+    inputLabel: 'Tên đăng nhập',
+    inputType: 'text',
+    inputIcon: 'person',
+    placeholder: 'Nhập tên đăng nhập',
     submitLabel: 'Đăng nhập Trung tâm',
   },
   Teacher: {
     label: 'Giảng viên',
     icon: 'person',
-    inputLabel: 'Địa chỉ Email',
-    inputType: 'email',
-    inputIcon: 'mail',
-    placeholder: 'teacher@edutrack.com',
+    inputLabel: 'Tên đăng nhập',
+    inputType: 'text',
+    inputIcon: 'person',
+    placeholder: 'Nhập tên đăng nhập',
     submitLabel: 'Đăng nhập Giảng viên',
   },
-  Admin: {
-    label: 'Admin',
-    icon: 'admin_panel_settings',
-    inputLabel: 'Tên đăng nhập Admin',
-    inputType: 'text',
-    inputIcon: 'admin_panel_settings',
-    placeholder: 'admin7007',
-    submitLabel: 'Đăng nhập Quản trị',
-  },
 };
+
 
 const getRoleHomePage = (role) => {
   if (role === 'Teacher') return 'teacher-dashboard';
@@ -147,16 +139,8 @@ const LoginPage = ({ onNavigate }) => {
 
     const trimmedUsername = username.trim();
     if (!trimmedUsername) {
-      setErrorMsg(activeRole === 'Admin' ? 'Vui lòng nhập tên đăng nhập Admin.' : 'Vui lòng nhập địa chỉ Email.');
+      setErrorMsg('Vui lòng nhập tên đăng nhập.');
       return;
-    }
-
-    if (activeRole !== 'Admin') {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(trimmedUsername)) {
-        setErrorMsg('Email không đúng định dạng, ví dụ: admin@edutrack.com.');
-        return;
-      }
     }
 
     if (!password) {
@@ -197,7 +181,7 @@ const LoginPage = ({ onNavigate }) => {
         lowerMsg.includes('khong chinh xac') ||
         error.status === 401
       ) {
-        setErrorMsg(activeRole === 'Admin' ? 'Tên đăng nhập hoặc mật khẩu không chính xác.' : 'Email hoặc mật khẩu không chính xác.');
+        setErrorMsg('Tên đăng nhập hoặc mật khẩu không chính xác.');
       } else {
         setErrorMsg(msg || 'Không thể kết nối đến máy chủ. Vui lòng thử lại sau.');
       }

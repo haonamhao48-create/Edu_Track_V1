@@ -7,17 +7,20 @@ export default defineConfig({
   server: {
     proxy: {
       '/ws/chat': {
-        target: 'http://localhost:7007',
+        target: 'https://api.edutrack.io.vn',
         ws: true,
         changeOrigin: true,
+        secure: false,
       },
       '/api/admin': {
-        target: 'http://localhost:8085',
+        target: 'https://api.edutrack.io.vn',
         changeOrigin: true,
+        secure: false,
       },
       '/api': {
-        target: 'http://localhost:7007',
+        target: 'https://api.edutrack.io.vn',
         changeOrigin: true,
+        secure: false,
       }
     }
   }

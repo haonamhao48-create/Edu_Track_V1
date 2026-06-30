@@ -387,6 +387,58 @@
 }
 
 /* =========================================================
+   Student Action Buttons (Create / Update Feedback)
+   ========================================================= */
+
+.studentActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.createFeedbackBtn,
+.updateFeedbackBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--border-radius-DEFAULT);
+  font-size: var(--font-label-lg);
+  font-weight: 600;
+  font-family: var(--font-family-body);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  box-shadow: var(--shadow-sm);
+}
+
+.createFeedbackBtn {
+  background-color: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
+}
+
+.createFeedbackBtn:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.updateFeedbackBtn {
+  background-color: var(--surface-container-low);
+  color: var(--tertiary);
+  border-color: var(--outline-variant);
+}
+
+.updateFeedbackBtn:hover {
+  background-color: var(--surface-container-high);
+  border-color: var(--text-muted);
+  transform: translateY(-1px);
+}
+
+/* =========================================================
    Modal Forms / Overlays
    ========================================================= */
 
@@ -396,18 +448,23 @@
   background-color: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(2px);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   z-index: 1000;
   padding: 20px;
+  overflow-y: auto;
 }
 
 .modalCard {
   width: min(720px, 100%);
+  margin: auto;
   background-color: var(--surface-container-lowest);
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--outline-variant);
+  max-height: calc(100vh - 40px);
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 
@@ -448,6 +505,10 @@
 
 .feedbackForm {
   padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .feedbackSessionSummary {

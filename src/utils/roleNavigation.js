@@ -1,6 +1,8 @@
 export const PUBLIC_PAGES = [
   'login',
   'admin-login',
+  'admin',
+  'login/admin',
   'register',
   'forgot-password',
   'payment-success',

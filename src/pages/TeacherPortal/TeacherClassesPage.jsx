@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { classService } from '../../services/classService';
 import { studentService } from '../../services/studentService';
 import { teacherService } from '../../services/teacherService';
+import { scheduleService } from '../../services/scheduleService';
+import { toast } from 'react-hot-toast';
 import styles from './TeacherClassesPage.module.css';
 
 const TeacherClassesPage = ({ onNavigate }) => {
@@ -11,7 +13,45 @@ const TeacherClassesPage = ({ onNavigate }) => {
 
   useEffect(() => {
     fetchClasses();
+
+    // Check if we need to redirect to feedback
+    const urlParams = new URLSearchParams(window.location.search);
+    const action = urlParams.get('action');
+    const classId = urlParams.get('classId');
+    const studentId = urlParams.get('studentId');
+
+    if (action === 'feedback' && classId && studentId) {
+      handleRedirectToFeedback(classId, studentId);
+    }
   }, []);
+
+  const handleRedirectToFeedback = async (cid, sid) => {
+    try {
+      toast.loading('Đang chuyển hướng đến nhận xét ca dạy...', { id: 'dashFeedback' });
+      const schedulesRes = await scheduleService.getSchedulesByClass(cid).catch(() => []);
+      const schedulesList = Array.isArray(schedulesRes) ? schedulesRes : (schedulesRes?.data || []);
+      
+      if (schedulesList.length === 0) {
+        toast.dismiss('dashFeedback');
+        toast.error('Lớp học này chưa có ca dạy nào được xếp lịch để nhận xét.');
+        return;
+      }
+
+      const sortedSchedules = [...schedulesList].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+      const latestScheduleId = sortedSchedules[0]?.scheduleId || sortedSchedules[0]?.id;
+
+      toast.dismiss('dashFeedback');
+      if (latestScheduleId && onNavigate) {
+        onNavigate(`teacher-session-detail?classId=${cid}&scheduleId=${latestScheduleId}&tab=feedback&studentId=${sid}`);
+      } else {
+        toast.error('Không tìm thấy thông tin ca dạy hợp lệ.');
+      }
+    } catch (e) {
+      console.error("Error redirecting to feedback:", e);
+      toast.dismiss('dashFeedback');
+      toast.error('Có lỗi xảy ra khi chuyển hướng nhận xét.');
+    }
+  };
 
   const fetchClasses = async () => {
     setLoading(true);

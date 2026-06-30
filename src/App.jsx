@@ -93,6 +93,8 @@ const getInitialPage = () => {
 
   if (path.includes('payment/success')) return 'payment-success';
   if (path.includes('payment/cancel')) return 'payment-cancel';
+  if (path === '/admin' || path === '/admin/') return 'admin-login';
+  if (path === '/login/admin' || path === '/login/admin/') return 'admin-login';
   if (path.includes('admin-login')) return 'admin-login';
   if (path.includes('center-subscriptions')) return 'center-subscriptions';
   if (path.includes('admin-subscriptions')) return 'admin-subscriptions';

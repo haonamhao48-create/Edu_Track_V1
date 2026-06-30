@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { studentService } from '../../services/studentService';
 import { attendanceService } from '../../services/attendanceService';
+import { scheduleService } from '../../services/scheduleService';
+import { toast } from 'react-hot-toast';
 import styles from './TeacherStudentListPage.module.css';
 
 const TeacherStudentListPage = ({ onNavigate }) => {
@@ -28,21 +30,17 @@ const TeacherStudentListPage = ({ onNavigate }) => {
       const stdList = Array.isArray(stdRes) ? stdRes : (stdRes?.items || stdRes?.data || []);
       setStudents(stdList);
 
-      // Batch stats fetches in chunks of 5 for concurrency control (no arbitrary cap)
+      // Fetch all student stats concurrently for maximum loading speed
       const statsMap = {};
-      const chunkSize = 5;
-      for (let i = 0; i < stdList.length; i += chunkSize) {
-        const chunk = stdList.slice(i, i + chunkSize);
-        await Promise.all(
-          chunk.map(async (student) => {
-            const sId = student.studentId || student.id;
-            try {
-              const statRes = await attendanceService.getStudentStats(sId);
-              statsMap[sId] = statRes?.data || statRes;
-            } catch (_) {}
-          })
-        );
-      }
+      await Promise.all(
+        stdList.map(async (student) => {
+          const sId = student.studentId || student.id;
+          try {
+            const statRes = await attendanceService.getStudentStats(sId);
+            statsMap[sId] = statRes?.data || statRes;
+          } catch (_) {}
+        })
+      );
       setStudentStats(statsMap);
     } catch (err) {
       console.error('Error fetching students:', err);
@@ -58,10 +56,37 @@ const TeacherStudentListPage = ({ onNavigate }) => {
     }
   };
 
-  const handleOpenAddFeedback = (student) => {
+  const handleOpenAddFeedback = async (student) => {
     const sId = student.studentId || student.id;
-    if (onNavigate) {
-      onNavigate(`teacher-student-detail?studentId=${sId}&classId=${classId}`);
+    if (!classId || !onNavigate) return;
+
+    try {
+      toast.loading('Đang chuyển hướng đến ca dạy...', { id: 'navFeedback' });
+      // Tìm ca dạy mới nhất của lớp học
+      const schedulesRes = await scheduleService.getSchedulesByClass(classId).catch(() => []);
+      const schedulesList = Array.isArray(schedulesRes) ? schedulesRes : (schedulesRes?.data || []);
+      
+      if (schedulesList.length === 0) {
+        toast.dismiss('navFeedback');
+        toast.error('Lớp học này chưa có ca dạy nào được xếp lịch để nhận xét.');
+        return;
+      }
+
+      // Sắp xếp các ca dạy giảm dần theo ngày
+      const sortedSchedules = [...schedulesList].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+      const latestScheduleId = sortedSchedules[0]?.scheduleId || sortedSchedules[0]?.id;
+
+      toast.dismiss('navFeedback');
+      if (latestScheduleId) {
+        // Điều hướng đến ca dạy mới nhất, tab nhận xét và tự động mở modal của học sinh này
+        onNavigate(`teacher-session-detail?classId=${classId}&scheduleId=${latestScheduleId}&tab=feedback&studentId=${sId}`);
+      } else {
+        toast.error('Không tìm thấy thông tin ca dạy hợp lệ.');
+      }
+    } catch (err) {
+      console.error('Error navigating to feedback:', err);
+      toast.dismiss('navFeedback');
+      toast.error('Có lỗi xảy ra khi tìm ca dạy.');
     }
   };
 

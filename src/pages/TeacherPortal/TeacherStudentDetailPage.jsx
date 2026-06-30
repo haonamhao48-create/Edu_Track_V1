@@ -31,33 +31,61 @@ const TeacherStudentDetailPage = ({ onNavigate }) => {
     if (sid) {
       setStudentId(sid);
       setClassId(cid);
-      fetchStudentData(sid);
+      fetchStudentData(sid, cid);
     } else {
       if (onNavigate) onNavigate('teacher-classes');
     }
   }, []);
 
-  const fetchStudentData = async (sid) => {
+  const fetchStudentData = async (sid, cid) => {
     setLoading(true);
     try {
-      // Basic info (fallback to fetching all students and finding this one if there's no single fetch by teacher)
-      const detailRes = await studentService.getStudentDetail(sid);
-      setStudent(detailRes?.data || detailRes);
+      // 1. Fetch student basic info with fallback
+      let studentInfo = null;
+      try {
+        const detailRes = await studentService.getStudentDetail(sid);
+        studentInfo = detailRes?.data || detailRes;
+      } catch (err) {
+        console.warn('Failed to fetch student details directly, trying class list fallback:', err);
+        const resolvedCid = cid || classId;
+        if (resolvedCid) {
+          try {
+            const classRes = await studentService.getStudentsByClass(resolvedCid);
+            const classList = Array.isArray(classRes) ? classRes : (classRes?.items || classRes?.data || []);
+            studentInfo = classList.find(s => String(s.studentId || s.id || s.code) === String(sid));
+          } catch (fallbackErr) {
+            console.error('Class list fallback also failed:', fallbackErr);
+          }
+        }
+      }
+      setStudent(studentInfo);
 
-      // Stats
-      const statRes = await attendanceService.getStudentStats(sid);
-      setStats(statRes?.data || statRes);
+      // 2. Fetch stats
+      try {
+        const statRes = await attendanceService.getStudentStats(sid);
+        setStats(statRes?.data || statRes);
+      } catch (err) {
+        console.error('Error fetching student stats:', err);
+      }
 
-      // Feedback
-      const feedbackRes = await assessmentService.getCommentsByStudent(sid);
-      setFeedback(Array.isArray(feedbackRes) ? feedbackRes : (feedbackRes?.data || []));
+      // 3. Fetch feedback
+      try {
+        const feedbackRes = await assessmentService.getCommentsByStudent(sid);
+        setFeedback(Array.isArray(feedbackRes) ? feedbackRes : (feedbackRes?.data || []));
+      } catch (err) {
+        console.error('Error fetching student feedback:', err);
+      }
 
-      // Attendance history
-      const directAttendance = await apiClient(`/attendance/student/${sid}`, { method: 'GET' }).catch(() => []);
-      setAttendanceRecords(Array.isArray(directAttendance) ? directAttendance : (directAttendance?.data || []));
+      // 4. Fetch attendance history
+      try {
+        const directAttendance = await apiClient(`/attendance/student/${sid}`, { method: 'GET' }).catch(() => []);
+        setAttendanceRecords(Array.isArray(directAttendance) ? directAttendance : (directAttendance?.data || []));
+      } catch (err) {
+        console.error('Error fetching attendance history:', err);
+      }
       
     } catch (err) {
-      console.error('Error fetching student details:', err);
+      console.error('General error fetching student data:', err);
     } finally {
       setLoading(false);
     }
