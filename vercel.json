@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://api.edutrack.io.vn/api/:path*"
+    },
+    {
+      "source": "/ws/chat/:path*",
+      "destination": "https://api.edutrack.io.vn/ws/chat/:path*"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
+    }
+  ]
+}
