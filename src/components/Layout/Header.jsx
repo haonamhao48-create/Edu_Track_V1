@@ -227,10 +227,6 @@ const Header = ({ onNavigate }) => {
       </div>
 
       <div className={styles.rightSection}>
-        <button className={styles.iconButton} aria-label="Trợ giúp" title="Trợ giúp">
-          <span className="material-symbols-outlined">help</span>
-        </button>
-
         {role === 'Center' && (
           <button
             className={styles.iconButton}

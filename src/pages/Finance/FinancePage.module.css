@@ -454,8 +454,8 @@
 }
 
 .modalContent {
-  width: min(100%, 760px);
-  max-height: min(92vh, 920px);
+  width: min(100%, 820px);
+  max-height: min(92vh, 860px);
   overflow-y: auto;
   background: #fffdf9;
   border: 1px solid rgba(17, 17, 17, 0.08);
@@ -464,7 +464,7 @@
 }
 
 .modalNarrow {
-  max-width: 560px;
+  max-width: 640px;
 }
 
 .modalHeader {
@@ -472,7 +472,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 22px 24px;
+  padding: 16px 20px;
   border-bottom: 1px solid rgba(17, 17, 17, 0.08);
 }
 
@@ -512,17 +512,27 @@
 }
 
 .modalBody {
-  padding: 24px;
+  padding: 20px;
 }
 
 .modalFormStack {
   display: grid;
-  gap: 18px;
+  gap: 14px;
+}
+
+.modalFormGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.fullWidth {
+  grid-column: span 2;
 }
 
 .fieldGroup {
   display: grid;
-  gap: 8px;
+  gap: 6px;
 }
 
 .infoPanel {
@@ -551,7 +561,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  padding: 18px 24px 24px;
+  padding: 14px 20px 20px;
   border-top: 1px solid rgba(17, 17, 17, 0.08);
 }
 
@@ -623,9 +633,9 @@
 .invoiceHeader {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  margin-bottom: 24px;
-  padding-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
   border-bottom: 1px solid rgba(17, 17, 17, 0.08);
 }
 
@@ -653,8 +663,8 @@
 }
 
 .billTo {
-  margin-bottom: 24px;
-  padding: 18px;
+  margin-bottom: 16px;
+  padding: 14px;
   border-radius: var(--border-radius-lg);
   border: 1px solid rgba(17, 17, 17, 0.08);
   background: rgba(247, 246, 243, 0.78);
@@ -692,12 +702,12 @@
 .invoiceTable {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .invoiceTable th,
 .invoiceTable td {
-  padding: 16px 0;
+  padding: 12px 0;
   border-bottom: 1px solid rgba(17, 17, 17, 0.08);
 }
 
@@ -791,5 +801,13 @@
 
   .modalTitle {
     font-size: 22px;
+  }
+
+  .modalFormGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .fullWidth {
+    grid-column: span 1;
   }
 }

@@ -365,6 +365,11 @@ const FinancePage = () => {
       return;
     }
 
+    if (!newInvoice.description || !newInvoice.description.trim()) {
+      setError('Vui lòng nhập mô tả hóa đơn.');
+      return;
+    }
+
     if (!newInvoice.dueDate) {
       setError('Vui lòng chọn hạn thanh toán.');
       return;
@@ -385,7 +390,7 @@ const FinancePage = () => {
         classId: selectedClassId,
         centerId,
         amount: Number(newInvoice.amount),
-        description: newInvoice.description.trim() || `Học phí ${currentStudent?.name || 'học viên'}`,
+        description: newInvoice.description.trim(),
         dueDate: newInvoice.dueDate,
       });
 
@@ -648,73 +653,76 @@ const FinancePage = () => {
             </div>
 
             <form onSubmit={handleCreateInvoice}>
-              <div className={`${styles.modalBody} ${styles.modalFormStack}`}>
-                <div className={styles.fieldGroup}>
-                  <label className={styles.fieldLabel}>Học sinh</label>
-                  <input
-                    type="text"
-                    disabled
-                    value={currentStudent?.name || ''}
-                    className={`${styles.fieldInput} ${styles.fieldInputReadonly}`}
-                  />
-                </div>
-
-                <div className={styles.fieldGroup}>
-                  <label className={styles.fieldLabel}>Phụ huynh liên kết</label>
-                  {loadingParents && (
-                    <div className={styles.infoPanel}>
-                      Đang kiểm tra phụ huynh liên kết...
-                    </div>
-                  )}
-                  {!loadingParents && selectedParent && (
+              <div className={styles.modalBody}>
+                <div className={styles.modalFormGrid}>
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel}>Học sinh</label>
                     <input
                       type="text"
                       disabled
-                      value={selectedParent.name}
-                      className={`${styles.fieldInput} ${styles.infoPanelSuccess}`}
+                      value={currentStudent?.name || ''}
+                      className={`${styles.fieldInput} ${styles.fieldInputReadonly}`}
                     />
-                  )}
-                  {!loadingParents && !selectedParent && (
-                    <div className={`${styles.infoPanel} ${styles.infoPanelError}`}>
-                      Học sinh này chưa được liên kết với phụ huynh.
-                    </div>
-                  )}
-                </div>
+                  </div>
 
-                <div className={styles.fieldGroup}>
-                  <label className={styles.fieldLabel}>Số tiền (VND) *</label>
-                  <input
-                    type="number"
-                    required
-                    min="1"
-                    placeholder="Ví dụ: 1500000"
-                    value={newInvoice.amount}
-                    onChange={(event) => setNewInvoice((previous) => ({ ...previous, amount: event.target.value }))}
-                    className={styles.fieldInput}
-                  />
-                </div>
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel}>Phụ huynh liên kết</label>
+                    {loadingParents && (
+                      <div className={styles.infoPanel}>
+                        Đang kiểm tra phụ huynh liên kết...
+                      </div>
+                    )}
+                    {!loadingParents && selectedParent && (
+                      <input
+                        type="text"
+                        disabled
+                        value={selectedParent.name}
+                        className={`${styles.fieldInput} ${styles.infoPanelSuccess}`}
+                      />
+                    )}
+                    {!loadingParents && !selectedParent && (
+                      <div className={`${styles.infoPanel} ${styles.infoPanelError}`}>
+                        Học sinh này chưa được liên kết với phụ huynh.
+                      </div>
+                    )}
+                  </div>
 
-                <div className={styles.fieldGroup}>
-                  <label className={styles.fieldLabel}>Mô tả hóa đơn</label>
-                  <input
-                    type="text"
-                    placeholder="Ví dụ: Học phí khóa học Tiếng Anh tháng 6"
-                    value={newInvoice.description}
-                    onChange={(event) => setNewInvoice((previous) => ({ ...previous, description: event.target.value }))}
-                    className={styles.fieldInput}
-                  />
-                </div>
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel}>Số tiền (VND) *</label>
+                    <input
+                      type="number"
+                      required
+                      min="1"
+                      placeholder="Ví dụ: 1500000"
+                      value={newInvoice.amount}
+                      onChange={(event) => setNewInvoice((previous) => ({ ...previous, amount: event.target.value }))}
+                      className={styles.fieldInput}
+                    />
+                  </div>
 
-                <div className={styles.fieldGroup}>
-                  <label className={styles.fieldLabel}>Hạn thanh toán *</label>
-                  <input
-                    type="date"
-                    required
-                    min={getTodayDateInput()}
-                    value={newInvoice.dueDate}
-                    onChange={(event) => setNewInvoice((previous) => ({ ...previous, dueDate: event.target.value }))}
-                    className={styles.fieldInput}
-                  />
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel}>Hạn thanh toán *</label>
+                    <input
+                      type="date"
+                      required
+                      min={getTodayDateInput()}
+                      value={newInvoice.dueDate}
+                      onChange={(event) => setNewInvoice((previous) => ({ ...previous, dueDate: event.target.value }))}
+                      className={styles.fieldInput}
+                    />
+                  </div>
+
+                  <div className={`${styles.fieldGroup} ${styles.fullWidth}`}>
+                    <label className={styles.fieldLabel}>Mô tả hóa đơn *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Ví dụ: Học phí khóa học Tiếng Anh tháng 6"
+                      value={newInvoice.description}
+                      onChange={(event) => setNewInvoice((previous) => ({ ...previous, description: event.target.value }))}
+                      className={styles.fieldInput}
+                    />
+                  </div>
                 </div>
               </div>
 
