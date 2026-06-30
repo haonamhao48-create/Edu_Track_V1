@@ -168,6 +168,17 @@ const FinancePage = () => {
     return () => clearTimeout(timer);
   }, [success]);
 
+  useEffect(() => {
+    if (showCreateModal || selectedInvoice || confirmModal.isOpen) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [showCreateModal, selectedInvoice, confirmModal.isOpen]);
+
   const centerId = String(centerProfile?.centerId || centerProfile?.id || '');
   const currentStudent = students.find((student) => student.id === String(selectedStudentId)) || null;
   const linkedParent = parentDirectory.byStudentId[String(selectedStudentId)] || null;

@@ -111,6 +111,15 @@ p {
   animation: pageTransitionIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+body.modal-open {
+  overflow: hidden;
+}
+
+body.modal-open .dashboard-transition {
+  position: relative;
+  z-index: 9999;
+}
+
 @keyframes pageTransitionIn {
   0% {
     opacity: 0;
