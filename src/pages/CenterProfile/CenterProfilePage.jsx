@@ -111,13 +111,18 @@ const CenterProfilePage = ({ onNavigate }) => {
       await centerService.updateCenterProfile(payload);
       sessionStorage.setItem('center_profile_needs_reload', 'true');
       
-      // Update local state
-      setProfile(prev => ({
-        ...prev,
-        name: payload.name,
-        address: payload.address
-      }));
+      // Update local state and cache
+      setProfile(prev => {
+        const next = {
+          ...prev,
+          name: payload.name,
+          address: payload.address
+        };
+        sessionStorage.setItem('cached_center_profile', JSON.stringify(next));
+        return next;
+      });
       
+      window.dispatchEvent(new Event('center_profile_updated'));
       setSuccessMsg('Cập nhật thông tin trung tâm thành công!');
       setIsEditing(false);
     } catch (err) {
@@ -160,12 +165,17 @@ const CenterProfilePage = ({ onNavigate }) => {
       const updatedLogoUrl = res.logoUrl;
       sessionStorage.setItem('center_profile_needs_reload', 'true');
       
-      // Update local state
-      setProfile(prev => ({
-        ...prev,
-        logo: updatedLogoUrl
-      }));
+      // Update local state and cache
+      setProfile(prev => {
+        const next = {
+          ...prev,
+          logo: updatedLogoUrl
+        };
+        sessionStorage.setItem('cached_center_profile', JSON.stringify(next));
+        return next;
+      });
       
+      window.dispatchEvent(new Event('center_profile_updated'));
       setSuccessMsg('Cập nhật logo trung tâm thành công!');
     } catch (err) {
       console.error('Lỗi khi tải lên logo:', err);

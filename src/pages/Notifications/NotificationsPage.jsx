@@ -598,7 +598,7 @@ const NotificationsPage = ({ onNavigate }) => {
                           onClick={() => setRecipientType('All')}
                         >
                           <span className="material-symbols-outlined">group</span>
-                          <span>Tất cả trung tâm</span>
+                          <span>Trung tâm</span>
                         </button>
                         <button
                           type="button"

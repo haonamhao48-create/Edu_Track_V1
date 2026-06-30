@@ -43,10 +43,7 @@ const Header = ({ onNavigate }) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const [showNotiDropdown, setShowNotiDropdown] = useState(false);
-  const [displayName, setDisplayName] = useState('');
-  const [displayLogo, setDisplayLogo] = useState(null);
   const dropdownRef = useRef(null);
-
   const userStr = localStorage.getItem('user');
   let user = null;
   try {
@@ -57,6 +54,48 @@ const Header = ({ onNavigate }) => {
 
   const role = user?.role;
 
+  const [displayName, setDisplayName] = useState(() => {
+    if (role === 'Center') {
+      const cached = sessionStorage.getItem('cached_center_profile');
+      if (cached) {
+        try {
+          const profile = JSON.parse(cached);
+          return profile?.name || '';
+        } catch (_) {}
+      }
+    } else if (role === 'Teacher') {
+      const cached = sessionStorage.getItem('cached_teacher_profile');
+      if (cached) {
+        try {
+          const profile = JSON.parse(cached);
+          return profile?.fullName || '';
+        } catch (_) {}
+      }
+    }
+    return user?.fullName || user?.username || '';
+  });
+
+  const [displayLogo, setDisplayLogo] = useState(() => {
+    if (role === 'Center') {
+      const cached = sessionStorage.getItem('cached_center_profile');
+      if (cached) {
+        try {
+          const profile = JSON.parse(cached);
+          return profile?.logo || null;
+        } catch (_) {}
+      }
+    } else if (role === 'Teacher') {
+      const cached = sessionStorage.getItem('cached_teacher_profile');
+      if (cached) {
+        try {
+          const profile = JSON.parse(cached);
+          return profile?.imageUrl || profile?.avatar || null;
+        } catch (_) {}
+      }
+    }
+    return user?.imageUrl || user?.avatar || null;
+  });
+
   useEffect(() => {
     fetchUnreadCount();
     fetchProfile();
@@ -64,9 +103,15 @@ const Header = ({ onNavigate }) => {
     const interval = setInterval(fetchUnreadCount, 30000);
     window.addEventListener('unread_count_updated', fetchUnreadCount);
 
+    const handleProfileUpdate = () => {
+      fetchProfile();
+    };
+    window.addEventListener('center_profile_updated', handleProfileUpdate);
+
     return () => {
       clearInterval(interval);
       window.removeEventListener('unread_count_updated', fetchUnreadCount);
+      window.removeEventListener('center_profile_updated', handleProfileUpdate);
     };
   }, []);
 
