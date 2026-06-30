@@ -374,9 +374,14 @@ const TeacherChatPage = ({ onNavigate }) => {
 
   const connectSocket = async (roomId) => {
     try {
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const host = window.location.host;
-      const wsUrl = `${protocol}//${host}/ws/chat/websocket`; // proxy path
+      let wsUrl = '';
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const host = window.location.host;
+        wsUrl = `${protocol}//${host}/ws/chat/websocket`; // proxy path
+      } else {
+        wsUrl = 'wss://api.edutrack.io.vn/ws/chat/websocket'; // direct secure path to backend gateway
+      }
 
       const stomp = new BrowserStompClient(wsUrl, token);
       await stomp.connect();
