@@ -16,24 +16,10 @@ const removeAccents = (str) => {
 };
 
 const TeachersPage = ({ onNavigate }) => {
-  const [classes, setClasses] = useState(() => {
-    const cached = sessionStorage.getItem('cached_classes');
-    return cached ? JSON.parse(cached) : [];
-  });
-  const [teachers, setTeachers] = useState(() => {
-    const cached = sessionStorage.getItem('cached_teachers_page_1');
-    return cached ? JSON.parse(cached) : [];
-  });
-  const [loading, setLoading] = useState(() => {
-    const cached = sessionStorage.getItem('cached_teachers_page_1');
-    const needsReload = sessionStorage.getItem('teachers_needs_reload') === 'true';
-    return !cached || needsReload;
-  });
-  const [loadingClasses, setLoadingClasses] = useState(() => {
-    const cached = sessionStorage.getItem('cached_classes');
-    const needsReload = sessionStorage.getItem('classes_needs_reload') === 'true';
-    return !cached || needsReload;
-  });
+  const [classes, setClasses] = useState([]);
+  const [teachers, setTeachers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingClasses, setLoadingClasses] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -41,10 +27,7 @@ const TeachersPage = ({ onNavigate }) => {
   // Pagination State
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
-  const [totalCount, setTotalCount] = useState(() => {
-    const cachedTotal = sessionStorage.getItem('cached_teachers_total');
-    return cachedTotal ? parseInt(cachedTotal, 10) : 0;
-  });
+  const [totalCount, setTotalCount] = useState(0);
 
   // Filters State
   const [searchTerm, setSearchTerm] = useState('');
@@ -110,22 +93,12 @@ const TeachersPage = ({ onNavigate }) => {
   }, [success]);
 
   // Fetch classes for class count matching
-  const fetchClasses = async (force = false) => {
-    const needsReload = sessionStorage.getItem('classes_needs_reload') === 'true';
-    const hasCache = sessionStorage.getItem('cached_classes');
-
-    if (!force && !needsReload && hasCache) {
-      setLoadingClasses(false);
-      return;
-    }
-
+  const fetchClasses = async () => {
     setLoadingClasses(true);
     try {
       const data = await classService.getAllClasses();
       const list = normalizeListResponse(data);
       setClasses(list);
-      sessionStorage.setItem('cached_classes', JSON.stringify(list));
-      sessionStorage.removeItem('classes_needs_reload');
     } catch (err) {
       console.error('Lỗi khi tải danh sách lớp học:', err);
     } finally {
@@ -139,34 +112,6 @@ const TeachersPage = ({ onNavigate }) => {
     const activeStatusFilter = overrideParams.statusFilter !== undefined ? overrideParams.statusFilter : statusFilter;
     const activeSubjectFilter = overrideParams.subjectFilter !== undefined ? overrideParams.subjectFilter : subjectFilter;
     const activeSearchTerm = overrideParams.searchTerm !== undefined ? overrideParams.searchTerm : searchTerm;
-    const force = overrideParams.force === true;
-
-    const isCacheable = activeStatusFilter === 'all' && !activeSubjectFilter && !activeSearchTerm;
-    const needsReload = sessionStorage.getItem('teachers_needs_reload') === 'true';
-
-    if (needsReload || force) {
-      Object.keys(sessionStorage).forEach(key => {
-        if (key.startsWith('cached_teachers_page_') || key === 'cached_teachers_total') {
-          sessionStorage.removeItem(key);
-        }
-      });
-    }
-
-    const cacheKey = `cached_teachers_page_${activePage}`;
-    const hasCache = sessionStorage.getItem(cacheKey);
-
-    if (isCacheable && !force && !needsReload && hasCache) {
-      const cached = sessionStorage.getItem(cacheKey);
-      const cachedTotal = sessionStorage.getItem('cached_teachers_total');
-      if (cached) {
-        setTeachers(JSON.parse(cached));
-      }
-      if (cachedTotal) {
-        setTotalCount(parseInt(cachedTotal, 10));
-      }
-      setLoading(false);
-      return;
-    }
 
     setLoading(true);
     setError('');
@@ -190,12 +135,6 @@ const TeachersPage = ({ onNavigate }) => {
       const list = data?.items || [];
       setTeachers(list);
       setTotalCount(data?.totalCount || list.length);
-
-      if (isCacheable) {
-        sessionStorage.setItem(cacheKey, JSON.stringify(list));
-        sessionStorage.setItem('cached_teachers_total', (data?.totalCount || list.length).toString());
-        sessionStorage.removeItem('teachers_needs_reload');
-      }
     } catch (err) {
       console.error('Lỗi khi tải danh sách giáo viên:', err);
       setError('Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại dịch vụ.');
