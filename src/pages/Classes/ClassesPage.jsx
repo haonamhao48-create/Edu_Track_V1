@@ -329,7 +329,7 @@ const ClassesPage = ({ onNavigate }) => {
                           <td><span className={statusDisplay.className}>{statusDisplay.text}</span></td>
                           <td className={styles.actionCell}>
                             <button className={styles.actionBtn} onClick={(e) => toggleMenu(idx, e)} aria-label="Thao tác" aria-haspopup="menu" aria-expanded={activeMenu === idx}>
-                              <span className="material-symbols-outlined notranslate" translate="no">more_vert</span>
+                              <span className="material-symbols-outlined notranslate" translate="no">settings</span>
                             </button>
                             {activeMenu === idx && (
                               <div className={styles.actionMenu}>
