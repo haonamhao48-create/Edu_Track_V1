@@ -297,7 +297,7 @@ const ParentsPage = ({ onNavigate }) => {
                                 aria-haspopup="menu"
                                 aria-expanded={activeDropdown === pId}
                               >
-                                <span className="material-symbols-outlined notranslate" translate="no">more_vert</span>
+                                <span className="material-symbols-outlined notranslate" translate="no">settings</span>
                               </button>
                               
                               {activeDropdown === pId && (

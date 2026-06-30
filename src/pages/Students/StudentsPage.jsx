@@ -511,7 +511,7 @@ const StudentsPage = ({ onNavigate }) => {
                               aria-haspopup="menu"
                               aria-expanded={activeDropdown === sId}
                             >
-                              <span className="material-symbols-outlined notranslate" translate="no">more_vert</span>
+                              <span className="material-symbols-outlined notranslate" translate="no">settings</span>
                             </button>
                             
                             {activeDropdown === sId && (

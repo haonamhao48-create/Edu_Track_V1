@@ -387,23 +387,23 @@ select.filterSelect {
 }
 
 .actionBtn {
-  padding: var(--spacing-xs);
-  border-radius: 50%;
-  background: none;
-  border: none;
-  color: var(--outline);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--outline-variant);
+  background-color: var(--surface-container-low);
+  color: var(--on-surface-variant);
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
 }
 
 .actionBtn:hover {
-  background-color: var(--surface-container-low);
-  color: var(--primary);
+  background-color: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
 }
 
 .dropdownMenu {
