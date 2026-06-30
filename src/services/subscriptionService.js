@@ -62,15 +62,15 @@ export const subscriptionService = {
     ]);
   },
 
-  createCenterSubscriptionCheckout: async (packageId) => {
+  createCenterSubscriptionCheckout: async (payload) => {
     return tryRequestVariants([
       () => apiClient('/finance/subscriptions/checkout', {
         method: 'POST',
-        body: JSON.stringify(packageId),
+        body: JSON.stringify(payload),
       }),
       () => apiClient('/center/subscriptions/checkout', {
         method: 'POST',
-        body: JSON.stringify(packageId),
+        body: JSON.stringify(payload),
       }),
     ]);
   },

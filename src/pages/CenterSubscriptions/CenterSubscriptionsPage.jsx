@@ -152,6 +152,8 @@ const CenterSubscriptionsPage = () => {
       const response = await subscriptionService.createCenterSubscriptionCheckout({
         centerId,
         packageId: pkg.id,
+        cancelUrl: `${window.location.origin}/payment/cancel`,
+        returnUrl: `${window.location.origin}/payment/success`,
       });
       const { checkoutUrl, orderCode, invoiceId } = extractCheckoutPayload(response);
 
