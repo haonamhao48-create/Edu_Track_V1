@@ -6,6 +6,7 @@ const PaymentCancelPage = ({ onNavigate }) => {
   const [orderCode, setOrderCode] = useState('');
   const [returnPage, setReturnPage] = useState('finance');
   const [buttonLabel, setButtonLabel] = useState('Quay lại trang tài chính');
+  const [countdown, setCountdown] = useState(8);
 
   const userStr = localStorage.getItem('user');
   let user = null;
@@ -32,8 +33,8 @@ const PaymentCancelPage = ({ onNavigate }) => {
     if (isSub) {
       resolvedReturnPage = getPaymentReturnPageForRole(originRole);
       resolvedButtonLabel = resolvedReturnPage === 'admin-subscriptions'
-        ? 'Quay lại trang quản lý gói đăng ký'
-        : 'Quay lại trang gói đăng ký';
+        ? 'Quay lại quản lý gói'
+        : 'Quay lại trang gói';
     }
     setReturnPage(resolvedReturnPage);
     setButtonLabel(resolvedButtonLabel);
@@ -46,14 +47,21 @@ const PaymentCancelPage = ({ onNavigate }) => {
     sessionStorage.removeItem('payos_pending_order_code');
     sessionStorage.removeItem('payos_pending_package_id');
     sessionStorage.removeItem('payos_pending_center_id');
+  }, [originRole]);
 
-    // Tự động chuyển hướng sau 100ms để đảm bảo React hoàn tất render/commit phase
-    const timer = setTimeout(() => {
-      onNavigate(resolvedReturnPage);
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, [originRole, onNavigate]);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          onNavigate(returnPage);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [returnPage, onNavigate]);
 
   return (
     <div className={styles.pageRoot}>
@@ -65,7 +73,7 @@ const PaymentCancelPage = ({ onNavigate }) => {
 
           <h2 className={styles.cancelTitle}>Đã hủy thanh toán</h2>
           <p className={styles.cancelSub}>
-            Giao dịch thanh toán hóa đơn của bạn đã bị hủy bỏ theo yêu cầu. Bạn sẽ không bị trừ tiền cho giao dịch này.
+            Giao dịch thanh toán của bạn đã bị hủy bỏ theo yêu cầu. Bạn sẽ không bị trừ tiền cho giao dịch này.
           </p>
 
           {orderCode && (
@@ -76,14 +84,17 @@ const PaymentCancelPage = ({ onNavigate }) => {
               </div>
               <div className={styles.detailRow}>
                 <span className={styles.label}>Trạng thái</span>
-                <span className={styles.value} style={{ color: '#dc2626', fontWeight: 600 }}>Đã hủy</span>
+                <span className={styles.value} style={{ color: '#dc2626', fontWeight: 600 }}>Thất bại / Đã hủy</span>
               </div>
             </div>
           )}
 
           <div className={styles.actions}>
             <button className={styles.btnPrimary} onClick={() => onNavigate(returnPage)}>
-              {buttonLabel}
+              {buttonLabel} ({countdown}s)
+            </button>
+            <button className={styles.btnSecondary} onClick={() => onNavigate(user?.role ? getPaymentReturnPageForRole(user.role) === 'admin-subscriptions' ? 'admin-dashboard' : 'dashboard' : 'login')}>
+              Quay lại trang tổng quan
             </button>
           </div>
         </div>

@@ -28,7 +28,7 @@ const PaymentSuccessPage = ({ onNavigate }) => {
   }
 
   const originRole = sessionStorage.getItem('payos_origin_role') || user?.role;
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(8);
 
   useEffect(() => {
     if (isSuccessState && !loading) {
@@ -245,6 +245,9 @@ const PaymentSuccessPage = ({ onNavigate }) => {
               <button className={styles.btnPrimary} onClick={() => onNavigate(returnPage)}>
                 {buttonLabel} ({countdown}s)
               </button>
+              <button className={styles.btnSecondary} onClick={() => onNavigate(user?.role ? getPaymentReturnPageForRole(user.role) === 'admin-subscriptions' ? 'admin-dashboard' : 'dashboard' : 'login')}>
+                Quay lại trang tổng quan
+              </button>
             </div>
           </div>
         ) : (
@@ -257,6 +260,9 @@ const PaymentSuccessPage = ({ onNavigate }) => {
             <div className={styles.actions}>
               <button className={styles.btnPrimary} onClick={() => onNavigate(returnPage)}>
                 {buttonLabel}
+              </button>
+              <button className={styles.btnSecondary} onClick={() => onNavigate(user?.role ? getPaymentReturnPageForRole(user.role) === 'admin-subscriptions' ? 'admin-dashboard' : 'dashboard' : 'login')}>
+                Quay lại trang tổng quan
               </button>
             </div>
           </div>
