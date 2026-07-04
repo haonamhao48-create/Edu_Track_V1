@@ -91,8 +91,8 @@ const getSidebarActivePage = (page) => {
 const getInitialPage = () => {
   const path = window.location.pathname;
 
-  if (path.includes('payment/success')) return 'payment-success';
-  if (path.includes('payment/cancel')) return 'payment-cancel';
+  if (path.includes('payment/success') || path.includes('payment-success')) return 'payment-success';
+  if (path.includes('payment/cancel') || path.includes('payment-cancel')) return 'payment-cancel';
   if (path === '/admin' || path === '/admin/') return 'admin-login';
   if (path === '/login/admin' || path === '/login/admin/') return 'admin-login';
   if (path.includes('admin-login')) return 'admin-login';
