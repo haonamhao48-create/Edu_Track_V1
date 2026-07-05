@@ -12,27 +12,15 @@ async function main() {
   });
 
   try {
-    await connection.query('USE edutrackacademicdb;');
-    
-    // Find classes of teacher Nguyễn Văn D
-    const teacherId = 'c50ed6b7-1e73-4bab-90df-09cc592d7199';
-    const [classes] = await connection.query(
-      'SELECT * FROM studyclass WHERE TeacherId = ?;',
-      [teacherId]
-    );
-    
-    if (classes.length === 0) return;
+    await connection.query('USE edutrackassessmentdb;');
+    const [tables] = await connection.query('SHOW TABLES;');
+    console.log('Tables in edutrackassessmentdb:', tables.map(t => Object.values(t)[0]));
 
-    const classIds = classes.map(c => c.Id);
-
-    const [schedules] = await connection.query(
-      "SELECT Id, Title, Date, CAST(Date AS CHAR) AS DateStr, StartTime, EndTime, RoomName FROM schedule WHERE ClassId IN (?) AND Date >= '2026-06-25' AND Date <= '2026-07-08';",
-      [classIds]
-    );
-
-    console.log('Schedules around July 4th with raw strings:');
-    console.log(schedules);
-
+    for (const tableRow of tables) {
+      const tableName = Object.values(tableRow)[0];
+      const [columns] = await connection.query(`DESCRIBE ${tableName};`);
+      console.log(`Columns in ${tableName}:`, columns.map(c => `${c.Field} (${c.Type})`));
+    }
   } catch (error) {
     console.error('Error:', error);
   } finally {

@@ -3,6 +3,8 @@ import { teacherService } from '../../services/teacherService';
 import { scheduleService } from '../../services/scheduleService';
 import { classService } from '../../services/classService';
 import { chatService } from '../../services/chatService';
+import { studentService } from '../../services/studentService';
+import { assessmentService } from '../../services/assessmentService';
 import styles from './TeacherDashboardPage.module.css';
 
 const TeacherDashboardPage = ({ onNavigate }) => {
@@ -14,11 +16,7 @@ const TeacherDashboardPage = ({ onNavigate }) => {
   const [loading, setLoading] = useState(true);
 
   // Suggested students needing feedback
-  const [suggestedStudents, setSuggestedStudents] = useState([
-    { id: 'S001', name: 'Nguyễn Văn Anh', className: 'Toán nâng cao 8A', avatar: '' },
-    { id: 'S002', name: 'Trần Thị Bình', className: 'Toán nâng cao 8A', avatar: '' },
-    { id: 'S003', name: 'Lê Hoàng Minh', className: 'Hình học 8B', avatar: '' }
-  ]);
+  const [suggestedStudents, setSuggestedStudents] = useState([]);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -77,6 +75,62 @@ const TeacherDashboardPage = ({ onNavigate }) => {
           unread += Number(chatRooms[i].unreadCount || 0);
         }
         setUnreadChatCount(unread);
+
+        // 5. Fetch suggested students needing feedback dynamically
+        const suggested = [];
+        const pastDate = new Date();
+        pastDate.setDate(pastDate.getDate() - 14);
+        const pastDateStr = `${pastDate.getFullYear()}-${String(pastDate.getMonth() + 1).padStart(2, '0')}-${String(pastDate.getDate()).padStart(2, '0')}`;
+
+        // Fetch teacher schedules for the past 14 days
+        const pastSchedsRes = await scheduleService.getSchedules(pastDateStr, todayStr).catch(() => null);
+        const pastScheds = Array.isArray(pastSchedsRes) ? pastSchedsRes : (pastSchedsRes?.data || []);
+
+        // Sort past schedules by date descending
+        const sortedPastScheds = [...pastScheds].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        // For each class, find the latest schedule
+        const latestClassSchedules = {};
+        classList.forEach(cls => {
+          const cid = cls.classId || cls.studyClassId || cls.id;
+          const classSched = sortedPastScheds.find(s => (s.classId || s.id) === cid);
+          if (classSched) {
+            latestClassSchedules[cid] = classSched;
+          }
+        });
+
+        // Fetch students and comments for these latest schedules
+        await Promise.all(Object.entries(latestClassSchedules).map(async ([classId, sched]) => {
+          try {
+            const [studentsRes, commentsRes] = await Promise.all([
+              studentService.getStudentsByClass(classId),
+              assessmentService.getCommentsBySchedule(sched.scheduleId || sched.id).catch(() => [])
+            ]);
+
+            const students = Array.isArray(studentsRes) ? studentsRes : (studentsRes?.items || []);
+            const comments = Array.isArray(commentsRes) ? commentsRes : (commentsRes?.data || []);
+            const commentedStudentIds = new Set(comments.map(c => c.studentId));
+
+            const classObj = classList.find(c => (c.classId || c.studyClassId || c.id) === classId);
+            const className = classObj ? classObj.className : '';
+
+            students.forEach(std => {
+              const sid = std.studentId || std.id;
+              if (!commentedStudentIds.has(sid) && suggested.length < 5) {
+                suggested.push({
+                  id: sid,
+                  name: std.fullName || std.name || 'Học sinh',
+                  className: className,
+                  classId: classId
+                });
+              }
+            });
+          } catch (e) {
+            console.error('Error fetching class student feedback status:', e);
+          }
+        }));
+
+        setSuggestedStudents(suggested);
 
       } catch (err) {
         console.error('Error fetching teacher dashboard data:', err);
@@ -278,23 +332,29 @@ const TeacherDashboardPage = ({ onNavigate }) => {
                 </div>
                 <div className={styles.panelBody}>
                   <div className={styles.studentFeedbackList}>
-                    {suggestedStudents.map((std, idx) => (
-                      <div key={idx} className={styles.studentFeedbackItem}>
-                        <div className={styles.studentAvatarCircle}>
-                          {std.name.charAt(0)}
-                        </div>
-                        <div className={styles.studentInfo}>
-                          <h6>{std.name}</h6>
-                          <p>{std.className}</p>
-                        </div>
-                        <button 
-                          className={styles.feedbackActionBtn}
-                          onClick={() => onNavigate(`teacher-classes?classId=${std.classId || ''}&studentId=${std.id}&action=feedback`)}
-                        >
-                          Nhận xét
-                        </button>
+                    {suggestedStudents.length === 0 ? (
+                      <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px', padding: '24px 0' }}>
+                        Tất cả học sinh đã được nhận xét học tập!
                       </div>
-                    ))}
+                    ) : (
+                      suggestedStudents.map((std, idx) => (
+                        <div key={idx} className={styles.studentFeedbackItem}>
+                          <div className={styles.studentAvatarCircle}>
+                            {(std.name || 'H').charAt(0)}
+                          </div>
+                          <div className={styles.studentInfo}>
+                            <h6>{std.name}</h6>
+                            <p>{std.className}</p>
+                          </div>
+                          <button 
+                            className={styles.feedbackActionBtn}
+                            onClick={() => onNavigate(`teacher-classes?classId=${std.classId || ''}&studentId=${std.id}&action=feedback`)}
+                          >
+                            Nhận xét
+                          </button>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
               </div>
