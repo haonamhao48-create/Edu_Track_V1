@@ -30,3 +30,7 @@ skills-lock.json
 *.agent.json
 *.skills-local.json
 *.skills-lock.json
+
+# Scratch/Temporary testing files
+scratch/
+

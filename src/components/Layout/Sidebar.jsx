@@ -7,6 +7,7 @@ const centerNavItems = [
   { id: 'classes', icon: 'school', label: 'Lớp học' },
   { id: 'students', icon: 'group', label: 'Học sinh' },
   { id: 'teachers', icon: 'person', label: 'Giáo viên' },
+  { id: 'teacher-reviews', icon: 'rate_review', label: 'Đánh giá giáo viên' },
   { id: 'parents', icon: 'family_restroom', label: 'Phụ huynh' },
   { id: 'schedule', icon: 'calendar_month', label: 'Lịch biểu' },
   { id: 'attendance', icon: 'how_to_reg', label: 'Điểm danh' },
@@ -29,6 +30,7 @@ const adminNavItems = [
   { id: 'admin-parents', icon: 'family_restroom', label: 'Quản lý phụ huynh' },
   { id: 'admin-subscriptions', icon: 'workspace_premium', label: 'Gói đăng ký' },
   { id: 'admin-revenue', icon: 'payments', label: 'Doanh thu' },
+  { id: 'admin-teacher-reviews', icon: 'rate_review', label: 'Đánh giá giáo viên' },
 ];
 
 const getNavItemsForRole = (role) => {
