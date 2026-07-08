@@ -306,9 +306,13 @@
 .metricValue {
   font-family: var(--font-family-display);
   font-weight: 700;
-  font-size: 28px;
+  font-size: clamp(18px, 2vw, 26px);
   line-height: 1.08;
   letter-spacing: -0.04em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 .contentGrid {

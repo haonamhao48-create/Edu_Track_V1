@@ -22,4 +22,16 @@ export const reviewService = {
       method: 'GET',
     });
   },
+
+  /**
+   * Lấy danh sách đánh giá của trung tâm (phân trang)
+   * @param {string} centerId - ID của trung tâm
+   * @param {number} page - Trang hiện tại
+   * @param {number} pageSize - Kích thước trang
+   */
+  getCenterReviews: async (centerId, page = 1, pageSize = 10) => {
+    return await apiClient(`/reviews/center/${centerId}?page=${page}&pageSize=${pageSize}`, {
+      method: 'GET',
+    });
+  },
 };

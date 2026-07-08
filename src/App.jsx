@@ -52,6 +52,7 @@ import CreateTeacherPage from './pages/Teachers/CreateTeacherPage';
 import EditTeacherPage from './pages/Teachers/EditTeacherPage';
 import TeachersPage from './pages/Teachers/TeachersPage';
 import TeacherReviewsPage from './pages/TeacherReviews/TeacherReviewsPage';
+import CenterReviewsPage from './pages/CenterReviews/CenterReviewsPage';
 import Header from './components/Layout/Header';
 import Sidebar from './components/Layout/Sidebar';
 import {
@@ -104,7 +105,9 @@ const getInitialPage = () => {
   if (path.includes('admin-centers')) return 'admin-centers';
   if (path.includes('admin-parents')) return 'admin-parents';
   if (path.includes('admin-teacher-reviews')) return 'admin-teacher-reviews';
+  if (path.includes('admin-center-reviews')) return 'admin-center-reviews';
   if (path.includes('teacher-reviews')) return 'teacher-reviews';
+  if (path.includes('center-reviews')) return 'center-reviews';
   if (path.includes('teacher-dashboard')) return 'teacher-dashboard';
   if (path.includes('teacher-classes')) return 'teacher-classes';
   if (path.includes('teacher-schedule')) return 'teacher-schedule';
@@ -254,6 +257,8 @@ function App() {
     'admin-revenue',
     'teacher-reviews',
     'admin-teacher-reviews',
+    'center-reviews',
+    'admin-center-reviews',
     'schedule',
     'classes',
     'create-class',
@@ -320,6 +325,8 @@ function App() {
             {displayedPage === 'teachers' && <TeachersPage key={pageKey} onNavigate={navigate} />}
             {displayedPage === 'teacher-reviews' && <TeacherReviewsPage role="Center" onNavigate={navigate} />}
             {displayedPage === 'admin-teacher-reviews' && <TeacherReviewsPage role="Admin" onNavigate={navigate} />}
+            {displayedPage === 'center-reviews' && <CenterReviewsPage role="Center" onNavigate={navigate} />}
+            {displayedPage === 'admin-center-reviews' && <CenterReviewsPage role="Admin" onNavigate={navigate} />}
             {displayedPage === 'create-teacher' && <CreateTeacherPage onNavigate={navigate} />}
             {displayedPage === 'parents' && <ParentsPage key={pageKey} onNavigate={navigate} />}
             {displayedPage === 'create-parent' && <CreateParentPage onNavigate={navigate} />}

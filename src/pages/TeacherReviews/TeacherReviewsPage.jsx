@@ -159,8 +159,19 @@ const TeacherReviewsPage = ({ role = 'Center', onNavigate }) => {
   const formatReviewDate = (dateStr) => {
     if (!dateStr) return '';
     try {
-      const d = new Date(dateStr);
-      return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      let cleanStr = String(dateStr);
+      if (!/Z$|[+-]\d{2}:?\d{2}$/i.test(cleanStr)) {
+        cleanStr += 'Z';
+      }
+      const d = new Date(cleanStr);
+      return d.toLocaleString('vi-VN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour12: false
+      }).replace(',', '');
     } catch (_) {
       return dateStr;
     }
