@@ -63,6 +63,7 @@ const ADMIN_PAGES = new Set([
   'admin-centers',
   'admin-parents',
   'admin-subscriptions',
+  'admin-revenue',
   'admin-teacher-reviews',
   'admin-center-reviews',
   'edit-center',
