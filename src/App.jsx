@@ -19,6 +19,7 @@ import EditCenterPage from './pages/Admin/EditCenterPage';
 import EditParentPage from './pages/Admin/EditParentPage';
 import FinancePage from './pages/Finance/FinancePage';
 import ForgotPasswordPage from './pages/ForgotPassword/ForgotPasswordPage';
+import LandingPage from './pages/Landing/LandingPage';
 import LoginPage from './pages/Login/LoginPage';
 import NotificationsPage from './pages/Notifications/NotificationsPage';
 import CreateParentPage from './pages/Parents/CreateParentPage';
@@ -93,6 +94,7 @@ const getSidebarActivePage = (page) => {
 const getInitialPage = () => {
   const path = window.location.pathname;
 
+  if (path.includes('landing')) return 'landing';
   if (path.includes('payment/success') || path.includes('payment-success')) return 'payment-success';
   if (path.includes('payment/cancel') || path.includes('payment-cancel')) return 'payment-cancel';
   if (path === '/admin' || path === '/admin/') return 'admin-login';
@@ -128,6 +130,7 @@ const getInitialPage = () => {
   if (path.includes('teacher-attendance-note')) return 'teacher-attendance-note';
   if (path.includes('teacher-attendance-success')) return 'teacher-attendance-success';
   if (path.includes('teacher-add-feedback')) return 'teacher-add-feedback';
+  if (path.includes('login')) return 'login';
   if (path.includes('register')) return 'register';
   if (path.includes('create-class')) return 'create-class';
   if (path.includes('create-student')) return 'create-student';
@@ -150,12 +153,12 @@ const getInitialPage = () => {
   if (path.includes('edit-center')) return 'edit-center';
   if (path.includes('edit-parent')) return 'edit-parent';
   if (path.includes('settings')) return 'settings';
-  return 'login';
+  return 'landing';
 };
 
 const resolveAuthorizedPage = (requestedPage, token, role) => {
   if (!token) {
-    return PUBLIC_PAGES.includes(requestedPage) ? requestedPage : 'login';
+    return PUBLIC_PAGES.includes(requestedPage) ? requestedPage : 'landing';
   }
 
   if (PUBLIC_PAGES.includes(requestedPage) && !['forgot-password', 'payment-success', 'payment-cancel'].includes(requestedPage)) {
@@ -301,6 +304,15 @@ function App() {
     'teacher-attendance-success',
     'teacher-add-feedback',
   ].includes(displayedPage);
+
+  if (displayedPage === 'landing') {
+    return (
+      <>
+        <Toaster position="top-right" />
+        <LandingPage onNavigate={navigate} />
+      </>
+    );
+  }
 
   return (
     <>

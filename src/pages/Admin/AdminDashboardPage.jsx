@@ -100,9 +100,14 @@ const AdminDashboardPage = ({ onNavigate }) => {
         const rawSubs = subsRes ? unwrapData(subsRes) : null;
         setActiveSubsCount(rawSubs?.totalActiveSubscriptions ?? 0);
 
-        // Process Transactions
+        // Process Transactions (sort newest first)
         const rawTx = txRes ? unwrapData(txRes) : null;
-        setRecentTransactions(Array.isArray(rawTx) ? rawTx.slice(0, 5) : []);
+        const sortedTx = Array.isArray(rawTx) ? [...rawTx].sort((a, b) => {
+          const dateA = a.paidAt || a.paymentDate || a.date || a.createdAt || '';
+          const dateB = b.paidAt || b.paymentDate || b.date || b.createdAt || '';
+          return new Date(dateB).getTime() - new Date(dateA).getTime();
+        }) : [];
+        setRecentTransactions(sortedTx.slice(0, 5));
 
         // Process Package revenue stats (grouped from transaction list to bypass backend database packageName entry bug)
         const statsMap = {

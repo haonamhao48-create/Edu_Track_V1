@@ -211,7 +211,13 @@ const FinancePage = () => {
 
     try {
       const response = await invoiceService.getStudentInvoices(studentId);
-      setInvoices(normalizeList(response).map(normalizeInvoice));
+      const rawInvoices = normalizeList(response).map(normalizeInvoice);
+      rawInvoices.sort((a, b) => {
+        const dateA = a.createdAt || a.issueDate || a.date || a.dueDate || '';
+        const dateB = b.createdAt || b.issueDate || b.date || b.dueDate || '';
+        return new Date(dateB).getTime() - new Date(dateA).getTime();
+      });
+      setInvoices(rawInvoices);
     } catch (fetchError) {
       setError(fetchError.message || 'Không thể tải danh sách hóa đơn của học sinh này.');
     } finally {

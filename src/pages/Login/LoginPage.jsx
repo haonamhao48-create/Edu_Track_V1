@@ -245,6 +245,27 @@ const LoginPage = ({ onNavigate }) => {
 
         <div className={styles.rightPanel}>
           <div className={styles.rightHeader}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <button
+                type="button"
+                onClick={() => onNavigate('landing')}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: 'var(--text-muted, #64748b)',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  cursor: 'pointer',
+                  padding: '0'
+                }}
+              >
+                <span className="material-symbols-outlined notranslate" translate="no" style={{ fontSize: '16px' }}>arrow_back</span>
+                Trang chủ
+              </button>
+            </div>
             <h2 className={styles.title}>Chào mừng trở lại</h2>
             <p className={styles.subtitle}>Chọn tài khoản phù hợp để truy cập hệ thống</p>
           </div>

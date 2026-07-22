@@ -161,10 +161,14 @@ const AdminLoginPage = ({ onNavigate }) => {
           </form>
 
           {/* Simple return link */}
-          <div className={styles.backToPortal}>
+          <div className={styles.backToPortal} style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
+            <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('landing'); }}>
+              <span className="material-symbols-outlined notranslate" translate="no">home</span>
+              Trang chủ
+            </a>
             <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('login'); }}>
               <span className="material-symbols-outlined notranslate" translate="no">arrow_back</span>
-              Về cổng thông tin người dùng
+              Cổng người dùng
             </a>
           </div>
         </div>

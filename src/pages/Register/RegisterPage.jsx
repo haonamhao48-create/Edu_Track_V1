@@ -72,6 +72,27 @@ const RegisterPage = ({ onNavigate }) => {
       <Card>
         {/* Header Section */}
         <div className={styles.header}>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+            <button
+              type="button"
+              onClick={() => onNavigate('landing')}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--text-muted, #64748b)',
+                fontSize: '13px',
+                fontWeight: '600',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                cursor: 'pointer',
+                padding: '0'
+              }}
+            >
+              <span className="material-symbols-outlined notranslate" translate="no" style={{ fontSize: '16px' }}>arrow_back</span>
+              Trang chủ
+            </button>
+          </div>
           <img src={LOGO_URL} alt="EduTrack Logo" className={styles.logo} />
           <h1 className={styles.title}>Đăng ký Trung tâm</h1>
           <p className={styles.subtitle}>Tạo tài khoản quản lý trung tâm trên EduTrack</p>

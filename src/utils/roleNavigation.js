@@ -1,4 +1,5 @@
 export const PUBLIC_PAGES = [
+  'landing',
   'login',
   'admin-login',
   'admin',
@@ -82,7 +83,7 @@ export const getDefaultPageForRole = (role) => {
   if (role === 'Teacher') return 'teacher-dashboard';
   if (role === 'Admin') return 'admin-dashboard';
   if (role === 'Center') return 'dashboard';
-  return 'login';
+  return 'landing';
 };
 
 export const getPaymentReturnPageForRole = (role) => {

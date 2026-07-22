@@ -133,7 +133,13 @@ const AdminRevenuePage = () => {
             targetProgress: MOCK_SUMMARY.targetProgress,
           });
           setMonthlyRevenue(MOCK_MONTHLY_REVENUE);
-          setTransactions(MOCK_TRANSACTIONS.slice((currentPage - 1) * pageSize, currentPage * pageSize));
+          // Sort transactions by date descending (newest payment at top, oldest at bottom)
+          const sortedMock = [...MOCK_TRANSACTIONS].sort((a, b) => {
+            const dateA = a.paidAt || a.paymentDate || a.date || a.createdAt || '';
+            const dateB = b.paidAt || b.paymentDate || b.date || b.createdAt || '';
+            return new Date(dateB).getTime() - new Date(dateA).getTime();
+          });
+          setTransactions(sortedMock.slice((currentPage - 1) * pageSize, currentPage * pageSize));
           setTotalTransactions(MOCK_TRANSACTIONS.length);
         } else {
           setIsUsingMock(false);
@@ -158,8 +164,13 @@ const AdminRevenuePage = () => {
           // 2. Process Subscription Stats
           const activeCenters = rawSubs?.totalActiveSubscriptions ?? 0;
 
-          // 3. Process Transactions
-          let txList = Array.isArray(rawTx) ? rawTx : (rawTx?.items || []);
+          // 3. Process Transactions (sort newest first)
+          let txList = Array.isArray(rawTx) ? [...rawTx] : [...(rawTx?.items || [])];
+          txList.sort((a, b) => {
+            const dateA = a.paidAt || a.paymentDate || a.date || a.createdAt || '';
+            const dateB = b.paidAt || b.paymentDate || b.date || b.createdAt || '';
+            return new Date(dateB).getTime() - new Date(dateA).getTime();
+          });
           
           // Client-side pagination
           const totalTx = txList.length;
