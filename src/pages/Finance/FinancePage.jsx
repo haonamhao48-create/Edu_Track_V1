@@ -132,6 +132,13 @@ const getTodayDateInput = () => {
   return `${year}-${month}-${day}`;
 };
 
+const getInitials = (name) => {
+  if (!name) return 'HS';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
+
 const FinancePage = () => {
   const [classes, setClasses] = useState([]);
   const [students, setStudents] = useState([]);
@@ -139,7 +146,8 @@ const FinancePage = () => {
   const [centerProfile, setCenterProfile] = useState(null);
   const [selectedClassId, setSelectedClassId] = useState('');
   const [selectedStudentId, setSelectedStudentId] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [studentSearchTerm, setStudentSearchTerm] = useState('');
+  const [invoiceSearchTerm, setInvoiceSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [loadingClasses, setLoadingClasses] = useState(true);
   const [loadingStudents, setLoadingStudents] = useState(false);
@@ -149,6 +157,8 @@ const FinancePage = () => {
   const [creatingInvoice, setCreatingInvoice] = useState(false);
   const [cancellingInvoiceId, setCancellingInvoiceId] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [historyStudent, setHistoryStudent] = useState(null);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [newInvoice, setNewInvoice] = useState(INITIAL_INVOICE_FORM);
   const [parentDirectory, setParentDirectory] = useState(EMPTY_PARENT_DIRECTORY);
@@ -169,7 +179,7 @@ const FinancePage = () => {
   }, [success]);
 
   useEffect(() => {
-    if (showCreateModal || selectedInvoice || confirmModal.isOpen) {
+    if (showCreateModal || showHistoryModal || selectedInvoice || confirmModal.isOpen) {
       document.body.classList.add('modal-open');
     } else {
       document.body.classList.remove('modal-open');
@@ -177,12 +187,13 @@ const FinancePage = () => {
     return () => {
       document.body.classList.remove('modal-open');
     };
-  }, [showCreateModal, selectedInvoice, confirmModal.isOpen]);
+  }, [showCreateModal, showHistoryModal, selectedInvoice, confirmModal.isOpen]);
 
   const centerId = String(centerProfile?.centerId || centerProfile?.id || '');
-  const currentStudent = students.find((student) => student.id === String(selectedStudentId)) || null;
+  const currentStudent = students.find((student) => student.id === String(selectedStudentId)) || historyStudent || null;
   const linkedParent = parentDirectory.byStudentId[String(selectedStudentId)] || null;
   const selectedParent = newInvoice.parentId ? parentDirectory.byParentId[String(newInvoice.parentId)] : linkedParent;
+  const selectedClass = classes.find((c) => c.id === String(selectedClassId)) || null;
 
   const fetchParentDirectory = async ({ force = false } = {}) => {
     if (loadingParents) return;
@@ -277,11 +288,6 @@ const FinancePage = () => {
   }, [selectedClassId]);
 
   useEffect(() => {
-    setSelectedInvoice(null);
-    fetchInvoices(selectedStudentId);
-  }, [selectedStudentId]);
-
-  useEffect(() => {
     if (!showCreateModal || !selectedStudentId) return;
 
     const prepareModal = async () => {
@@ -300,18 +306,30 @@ const FinancePage = () => {
     }));
   }, [linkedParent, showCreateModal]);
 
+  const filteredStudents = useMemo(() => {
+    if (!studentSearchTerm.trim()) return students;
+    const term = studentSearchTerm.toLowerCase().trim();
+    return students.filter((student) => {
+      const name = String(student.name || '').toLowerCase();
+      const id = String(student.id || '').toLowerCase();
+      const email = String(student.email || '').toLowerCase();
+      const phone = String(student.phoneNumber || '').toLowerCase();
+      return name.includes(term) || id.includes(term) || email.includes(term) || phone.includes(term);
+    });
+  }, [students, studentSearchTerm]);
+
   const filteredInvoices = useMemo(() => {
     return invoices.filter((invoice) => {
       const invoiceId = String(invoice.id || '');
       const description = String(invoice.description || '');
-      const matchesSearch = !searchTerm.trim()
-        || invoiceId.toLowerCase().includes(searchTerm.toLowerCase())
-        || description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = !invoiceSearchTerm.trim()
+        || invoiceId.toLowerCase().includes(invoiceSearchTerm.toLowerCase())
+        || description.toLowerCase().includes(invoiceSearchTerm.toLowerCase());
 
       if (statusFilter === 'ALL') return matchesSearch;
       return matchesSearch && invoice.status === statusFilter;
     });
-  }, [invoices, searchTerm, statusFilter]);
+  }, [invoices, invoiceSearchTerm, statusFilter]);
 
   const analytics = useMemo(() => {
     const paid = filteredInvoices.filter((invoice) => invoice.status === 'PAID');
@@ -333,10 +351,21 @@ const FinancePage = () => {
     setNewInvoice(INITIAL_INVOICE_FORM);
   };
 
-  const handleOpenCreateModal = async () => {
+  const handleOpenCreateModalForStudent = async (student) => {
     setError('');
+    setSelectedStudentId(student.id);
     setShowCreateModal(true);
     await fetchParentDirectory();
+  };
+
+  const handleOpenHistoryForStudent = async (student) => {
+    setError('');
+    setSelectedStudentId(student.id);
+    setHistoryStudent(student);
+    setInvoiceSearchTerm('');
+    setStatusFilter('ALL');
+    setShowHistoryModal(true);
+    await fetchInvoices(student.id);
   };
 
   const handleRefreshInvoices = async () => {
@@ -413,7 +442,9 @@ const FinancePage = () => {
 
       setSuccess('Đã tạo hóa đơn học phí mới.');
       resetCreateModal();
-      await fetchInvoices(selectedStudentId);
+      if (showHistoryModal) {
+        await fetchInvoices(selectedStudentId);
+      }
     } catch (createError) {
       setError(createError.message || 'Không thể tạo hóa đơn.');
     } finally {
@@ -461,18 +492,6 @@ const FinancePage = () => {
               <h2 className={styles.pageTitle}>Quản lý hóa đơn học phí</h2>
               <p className={styles.pageSubtitle}>Tạo, theo dõi, đối chiếu trạng thái và hủy các hóa đơn học phí của trung tâm bằng dữ liệu thực tế.</p>
             </div>
-            <div className={styles.headerActions}>
-              {selectedStudentId && (
-                <button className={styles.btnSecondary} onClick={handleRefreshInvoices} disabled={loadingInvoices}>
-                  {loadingInvoices ? 'Đang tải...' : 'Làm mới'}
-                </button>
-              )}
-              {selectedStudentId && (
-                <button className={styles.addBtn} onClick={handleOpenCreateModal}>
-                  <span className="material-symbols-outlined">add_circle</span> Tạo hóa đơn mới
-                </button>
-              )}
-            </div>
           </div>
 
           {error && (
@@ -486,26 +505,13 @@ const FinancePage = () => {
             </div>
           )}
 
+          {/* FILTER BAR SECTION */}
           <div className={`${styles.cardBase} ${styles.filterSection}`}>
-            <div className={styles.filterGrid}>
-              <div className={styles.searchCol}>
-                <label className={styles.filterLabel}>Tìm kiếm hóa đơn</label>
-                <div className={styles.inputWrapper}>
-                  <span className={`material-symbols-outlined ${styles.searchIcon}`}>search</span>
-                  <input
-                    className={styles.filterInput}
-                    placeholder="Tìm theo mô tả hoặc mã hóa đơn..."
-                    type="text"
-                    value={searchTerm}
-                    onChange={(event) => setSearchTerm(event.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div>
+            <div className={styles.filterGridClassOnly}>
+              <div className={styles.selectClassCol}>
                 <label className={styles.filterLabel}>Lớp học *</label>
                 <select className={styles.filterSelect} value={selectedClassId} onChange={(event) => setSelectedClassId(event.target.value)}>
-                  <option value="">-- Chọn lớp học --</option>
+                  <option value="">-- Chọn lớp học để xem danh sách --</option>
                   {classes.map((studyClass) => (
                     <option key={studyClass.id} value={studyClass.id}>
                       {studyClass.name || `Lớp ${studyClass.id}`}
@@ -514,58 +520,188 @@ const FinancePage = () => {
                 </select>
               </div>
 
-              <div>
-                <label className={styles.filterLabel}>Học sinh *</label>
-                <select
-                  className={styles.filterSelect}
-                  value={selectedStudentId}
-                  onChange={(event) => setSelectedStudentId(event.target.value)}
-                  disabled={!selectedClassId || loadingStudents || loadingClasses}
+              {selectedClassId && (
+                <div className={styles.searchCol}>
+                  <label className={styles.filterLabel}>Tìm kiếm học sinh</label>
+                  <div className={styles.inputWrapper}>
+                    <span className={`material-symbols-outlined ${styles.searchIcon}`}>search</span>
+                    <input
+                      className={styles.filterInput}
+                      placeholder="Tìm theo tên học sinh..."
+                      type="text"
+                      value={studentSearchTerm}
+                      onChange={(event) => setStudentSearchTerm(event.target.value)}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* MAIN CONTENT: STUDENT LIST TABLE */}
+          <div className={`${styles.cardBase} ${styles.tableContainer}`}>
+            <div className={styles.tableResponsive}>
+              {loadingClasses || loadingStudents ? (
+                <div className={styles.loadingState}>Đang tải danh sách học sinh...</div>
+              ) : !selectedClassId ? (
+                <div className={styles.emptyState}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#94a3b8', marginBottom: '12px' }}>school</span>
+                  <span className={styles.emptyStateTitle}>Chọn lớp học để quản lý học phí</span>
+                  Vui lòng chọn lớp học ở bộ lọc phía trên để hiển thị danh sách học sinh và tạo hóa đơn.
+                </div>
+              ) : filteredStudents.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <span className={styles.emptyStateTitle}>Không tìm thấy học sinh nào</span>
+                  {studentSearchTerm ? 'Không có học sinh nào phù hợp với từ khóa tìm kiếm.' : 'Lớp học này hiện chưa có học sinh nào.'}
+                </div>
+              ) : (
+                <>
+                  <div className={styles.tableHeaderSub}>
+                    <h3 className={styles.subTitle}>
+                      Danh sách học sinh lớp <span className={styles.classNameHighlight}>{selectedClass?.name || 'được chọn'}</span>
+                    </h3>
+                    <span className={styles.badgeCount}>{filteredStudents.length} học sinh</span>
+                  </div>
+                  <table className={styles.table}>
+                    <thead>
+                      <tr>
+                        <th style={{ width: '60px' }}>STT</th>
+                        <th>Học sinh</th>
+                        <th>Lớp học</th>
+                        <th className={styles.textCenter} style={{ width: '340px' }}>Thao tác / Chức năng</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredStudents.map((student, index) => (
+                        <tr key={student.id} className={styles.tableRow}>
+                          <td className={styles.textCenter} style={{ color: '#64748b', fontWeight: '600' }}>
+                            {index + 1}
+                          </td>
+                          <td>
+                            <div className={styles.studentInfoCell}>
+                              <div className={styles.avatarCircle}>
+                                {getInitials(student.name)}
+                              </div>
+                              <div>
+                                <span className={styles.studentName}>{student.name}</span>
+                                {student.email && <small className={styles.studentSubtext}>{student.email}</small>}
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <span className={styles.classTag}>{selectedClass?.name || 'Chưa phân lớp'}</span>
+                          </td>
+                          <td className={styles.textCenter}>
+                            <div className={styles.actionBtnGroup}>
+                              <button
+                                className={styles.btnActionPrimary}
+                                onClick={() => handleOpenCreateModalForStudent(student)}
+                              >
+                                <span className="material-symbols-outlined">add_circle</span>
+                                Tạo mới hóa đơn
+                              </button>
+                              <button
+                                className={styles.btnActionSecondary}
+                                onClick={() => handleOpenHistoryForStudent(student)}
+                              >
+                                <span className="material-symbols-outlined">receipt_long</span>
+                                Lịch sử hóa đơn
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* INVOICE HISTORY MODAL */}
+      {showHistoryModal && historyStudent && (
+        <div className={styles.modalOverlay} onClick={() => setShowHistoryModal(false)}>
+          <div className={`${styles.modalContent} ${styles.modalWide}`} onClick={(event) => event.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <div className={styles.modalTitleGroup}>
+                <span className="material-symbols-outlined" style={{ fontSize: '28px', color: '#2563eb' }}>receipt_long</span>
+                <div>
+                  <h3 className={styles.modalTitle}>Lịch sử hóa đơn học phí</h3>
+                  <p className={styles.modalSubtitle}>Học sinh: <strong>{historyStudent.name}</strong> • Lớp: {selectedClass?.name || ''}</p>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <button
+                  className={styles.addBtn}
+                  onClick={() => handleOpenCreateModalForStudent(historyStudent)}
                 >
-                  <option value="">{loadingStudents ? 'Đang tải học sinh...' : '-- Chọn học sinh --'}</option>
-                  {students.map((student) => (
-                    <option key={student.id} value={student.id}>
-                      {student.name || student.id}
-                    </option>
-                  ))}
-                </select>
+                  <span className="material-symbols-outlined">add_circle</span> Tạo hóa đơn mới
+                </button>
+                <button className={styles.closeBtn} onClick={() => setShowHistoryModal(false)}>
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+            </div>
+
+            <div className={styles.modalBody}>
+              {/* Analytics summary for this student */}
+              <div className={styles.modalAnalyticsRow}>
+                <div className={styles.modalAnalyticBox}>
+                  <small>TỔNG PHẢI THU</small>
+                  <strong>{formatCurrency(analytics.totalAmount)}</strong>
+                </div>
+                <div className={`${styles.modalAnalyticBox} ${styles.boxSuccess}`}>
+                  <small>ĐÃ THÀNH TOÁN</small>
+                  <strong>{formatCurrency(analytics.paidAmount)}</strong>
+                </div>
+                <div className={`${styles.modalAnalyticBox} ${styles.boxWarning}`}>
+                  <small>CHỜ THANH TOÁN</small>
+                  <strong>{formatCurrency(analytics.pendingAmount)}</strong>
+                </div>
               </div>
 
-              <div>
-                <label className={styles.filterLabel}>Trạng thái</label>
-                <select className={styles.filterSelect} value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
-                  <option value="ALL">Tất cả</option>
+              {/* History Toolbar Filter */}
+              <div className={styles.historyFilterRow}>
+                <div className={styles.inputWrapper} style={{ flex: 1 }}>
+                  <span className={`material-symbols-outlined ${styles.searchIcon}`}>search</span>
+                  <input
+                    className={styles.filterInput}
+                    placeholder="Tìm theo mô tả hoặc mã hóa đơn..."
+                    type="text"
+                    value={invoiceSearchTerm}
+                    onChange={(event) => setInvoiceSearchTerm(event.target.value)}
+                  />
+                </div>
+                <select className={styles.filterSelect} style={{ width: '180px' }} value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+                  <option value="ALL">Tất cả trạng thái</option>
                   <option value="PENDING">Chờ thanh toán</option>
                   <option value="PAID">Đã thanh toán</option>
                   <option value="CANCELLED">Đã hủy</option>
                 </select>
+                <button className={styles.btnSecondary} onClick={handleRefreshInvoices} disabled={loadingInvoices}>
+                  {loadingInvoices ? 'Đang tải...' : 'Làm mới'}
+                </button>
               </div>
-            </div>
-          </div>
 
-          <div className={`${styles.cardBase} ${styles.tableContainer}`}>
-            <div className={styles.tableResponsive}>
+              {/* Invoices List Table inside modal */}
               {loadingInvoices ? (
-                <div className={styles.loadingState}>Đang tải danh sách hóa đơn...</div>
-              ) : !selectedStudentId ? (
-                <div className={styles.emptyState}>
-                  <span className={styles.emptyStateTitle}>Chọn đối tượng để bắt đầu</span>
-                  Vui lòng chọn lớp học và học sinh để xem hóa đơn.
-                </div>
+                <div className={styles.loadingState}>Đang tải lịch sử hóa đơn...</div>
               ) : filteredInvoices.length === 0 ? (
-                <div className={styles.emptyState}>
-                  <span className={styles.emptyStateTitle}>Chưa có hóa đơn nào</span>
-                  Học sinh này hiện chưa có hóa đơn học phí trong hệ thống.
+                <div className={styles.emptyStateModal}>
+                  <span className={styles.emptyStateTitle}>Chưa có lịch sử hóa đơn nào</span>
+                  Học sinh <strong>{historyStudent.name}</strong> hiện chưa có hóa đơn học phí phù hợp.
                 </div>
               ) : (
                 <table className={styles.table}>
                   <thead>
                     <tr>
-                      <th>Mô tả</th>
+                      <th>Mô tả hóa đơn</th>
                       <th>Hạn thanh toán</th>
                       <th className={styles.textRight}>Số tiền</th>
                       <th>Trạng thái</th>
-                      <th className={styles.textCenter}>Hành động</th>
+                      <th className={styles.textCenter}>Thao tác</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -608,57 +744,14 @@ const FinancePage = () => {
               )}
             </div>
 
-            {selectedStudentId && filteredInvoices.length > 0 && (
-              <div className={styles.pagination}>
-                <p className={styles.pageInfo}>Hiển thị <span>{filteredInvoices.length}</span> hóa đơn của học sinh</p>
-              </div>
-            )}
+            <div className={styles.modalFooter}>
+              <button type="button" className={styles.btnSecondary} onClick={() => setShowHistoryModal(false)}>Đóng</button>
+            </div>
           </div>
-
-          {selectedStudentId && filteredInvoices.length > 0 && (
-            <section className={styles.analyticsGrid}>
-              <div className={`${styles.cardBase} ${styles.analyticCard}`}>
-                <div className={`${styles.iconBox} ${styles.iconBoxPrimary}`}>
-                  <span className="material-symbols-outlined">payments</span>
-                </div>
-                <div>
-                  <p className={styles.analyticLabel}>Tổng phải thu</p>
-                  <p className={styles.analyticValue}>{formatCurrency(analytics.totalAmount)}</p>
-                </div>
-              </div>
-
-              <div className={`${styles.cardBase} ${styles.analyticCard}`}>
-                <div className={`${styles.iconBox} ${styles.iconBoxTertiary}`}>
-                  <span className="material-symbols-outlined">check_circle</span>
-                </div>
-                <div>
-                  <p className={styles.analyticLabel}>Đã thu</p>
-                  <p className={styles.analyticValue}>{formatCurrency(analytics.paidAmount)}</p>
-                  <p className={`${styles.analyticSub} ${styles.statToneSuccess}`}>
-                    <span className="material-symbols-outlined">done_all</span>
-                    <span>{analytics.paid.length} hóa đơn đã xong</span>
-                  </p>
-                </div>
-              </div>
-
-              <div className={`${styles.cardBase} ${styles.analyticCard}`}>
-                <div className={`${styles.iconBox} ${styles.iconBoxError}`}>
-                  <span className="material-symbols-outlined">pending_actions</span>
-                </div>
-                <div>
-                  <p className={styles.analyticLabel}>Chờ thanh toán</p>
-                  <p className={styles.analyticValue}>{formatCurrency(analytics.pendingAmount)}</p>
-                  <p className={`${styles.analyticSub} ${styles.statToneWarning}`}>
-                    <span className="material-symbols-outlined">schedule</span>
-                    <span>{analytics.pending.length} hóa đơn chờ</span>
-                  </p>
-                </div>
-              </div>
-            </section>
-          )}
         </div>
-      </main>
+      )}
 
+      {/* CREATE INVOICE MODAL */}
       {showCreateModal && (
         <div className={styles.modalOverlay} onClick={resetCreateModal}>
           <div className={`${styles.modalContent} ${styles.modalNarrow}`} onClick={(event) => event.stopPropagation()}>
@@ -748,9 +841,9 @@ const FinancePage = () => {
                 <button
                   type="submit"
                   className={styles.btnPrimary}
-                  disabled={creatingInvoice || loadingParents || !selectedParent}
+                  disabled={creatingInvoice || !selectedParent}
                 >
-                  {creatingInvoice ? 'Đang tạo...' : 'Tạo hóa đơn'}
+                  {creatingInvoice ? 'Đang khởi tạo...' : 'Tạo hóa đơn'}
                 </button>
               </div>
             </form>
@@ -758,13 +851,14 @@ const FinancePage = () => {
         </div>
       )}
 
+      {/* INVOICE DETAIL MODAL */}
       {selectedInvoice && (
         <div className={styles.modalOverlay} onClick={() => setSelectedInvoice(null)}>
-          <div className={styles.modalContent} onClick={(event) => event.stopPropagation()}>
+          <div className={`${styles.modalContent} ${styles.modalNarrow}`} onClick={(event) => event.stopPropagation()}>
             <div className={styles.modalHeader}>
+
               <div className={styles.modalTitleGroup}>
-                <span className="material-symbols-outlined textPrimary">receipt</span>
-                <h3 className={styles.modalTitle}>Chi tiết hóa đơn học phí</h3>
+                <h3 className={styles.modalTitle}>Chi tiết hóa đơn #{selectedInvoice.id}</h3>
               </div>
               <button className={styles.closeBtn} onClick={() => setSelectedInvoice(null)}>
                 <span className="material-symbols-outlined">close</span>
@@ -773,67 +867,40 @@ const FinancePage = () => {
 
             <div className={styles.modalBody}>
               {loadingInvoiceDetail ? (
-                <div className={styles.loadingState}>Đang tải chi tiết hóa đơn...</div>
+                <div className={styles.loadingState}>Đang tải thông tin chi tiết hóa đơn...</div>
               ) : (
-                <>
-                  <div className={styles.invoiceHeader}>
-                    <div className={styles.centerInfo}>
-                      <h3>{centerProfile?.name || 'Trung tâm giáo dục'}</h3>
-                      <p>Thông tin hóa đơn học phí</p>
-                    </div>
-                    <div className={styles.invoiceMeta}>
-                      <p>Ngày tạo: <strong>{formatDateTime(selectedInvoice.createdAt)}</strong></p>
-                      <p>Hạn trả: <strong>{formatDate(selectedInvoice.dueDate)}</strong></p>
-                      <p>Thanh toán lúc: <strong>{formatDateTime(selectedInvoice.paidAt)}</strong></p>
-                    </div>
+                <div className={styles.modalFormStack}>
+                  <div className={styles.detailRow}>
+                    <span>Mô tả:</span>
+                    <strong>{selectedInvoice.description || 'Học phí lớp học'}</strong>
                   </div>
-
-                  <div className={styles.billTo}>
-                    <h4>Đối tượng nộp học phí</h4>
-                    <div className={styles.billToGrid}>
-                      <div className={styles.billToItem}>
-                        <p>Học sinh:</p>
-                        <strong>{students.find((student) => student.id === String(selectedInvoice.studentId))?.name || currentStudent?.name || 'Học viên'}</strong>
-                      </div>
-                      <div className={styles.billToItem}>
-                        <p>Phụ huynh liên kết:</p>
-                        <strong>{parentDirectory.byParentId[String(selectedInvoice.parentId)]?.name || 'Phụ huynh đã liên kết'}</strong>
-                      </div>
-                    </div>
+                  <div className={styles.detailRow}>
+                    <span>Số tiền:</span>
+                    <strong className={styles.textPrimary}>{formatCurrency(selectedInvoice.amount)}</strong>
                   </div>
-
-                  <table className={styles.invoiceTable}>
-                    <thead>
-                      <tr>
-                        <th>Nội dung thanh toán</th>
-                        <th className={styles.textRight}>Thành tiền</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>{selectedInvoice.description || 'Học phí khóa học'}</td>
-                        <td className={`${styles.textRight} ${styles.fwBold}`}>{formatCurrency(selectedInvoice.amount)}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-
-                  <div className={styles.invoiceTotal}>
-                    <div className={styles.totalBox}>
-                      <div className={styles.totalRow}>
-                        <span>Trạng thái</span>
-                        <span>{getStatusDisplay(selectedInvoice.status).text}</span>
-                      </div>
-                      <div className={styles.totalRow}>
-                        <span>Tạm tính</span>
-                        <span>{formatCurrency(selectedInvoice.amount)}</span>
-                      </div>
-                      <div className={`${styles.totalRow} ${styles.finalTotal}`}>
-                        <span>Tổng tiền</span>
-                        <span>{formatCurrency(selectedInvoice.amount)}</span>
-                      </div>
-                    </div>
+                  <div className={styles.detailRow}>
+                    <span>Trạng thái:</span>
+                    <span className={`${styles.statusBadge} ${getStatusDisplay(selectedInvoice.status).className}`}>
+                      {getStatusDisplay(selectedInvoice.status).text}
+                    </span>
                   </div>
-                </>
+                  <div className={styles.detailRow}>
+                    <span>Hạn thanh toán:</span>
+                    <strong>{formatDate(selectedInvoice.dueDate)}</strong>
+                  </div>
+                  <div className={styles.detailRow}>
+                    <span>Ngày tạo:</span>
+                    <strong>{formatDateTime(selectedInvoice.createdAt || selectedInvoice.issueDate || selectedInvoice.date)}</strong>
+                  </div>
+                  <div className={styles.detailRow}>
+                    <span>Học sinh:</span>
+                    <strong>{currentStudent?.name || selectedInvoice.studentId}</strong>
+                  </div>
+                  <div className={styles.detailRow}>
+                    <span>Phụ huynh liên kết:</span>
+                    <strong>{selectedParent?.name || selectedInvoice.parentId || 'Chưa liên kết'}</strong>
+                  </div>
+                </div>
               )}
             </div>
 
@@ -844,10 +911,10 @@ const FinancePage = () => {
                   onClick={() => handleCancelInvoice(selectedInvoice.id)}
                   disabled={cancellingInvoiceId === selectedInvoice.id}
                 >
-                  Hủy hóa đơn
+                  Hủy hóa đơn này
                 </button>
               )}
-              <button className={styles.btnSecondary} onClick={() => setSelectedInvoice(null)}>Đóng</button>
+              <button type="button" className={styles.btnSecondary} onClick={() => setSelectedInvoice(null)}>Đóng</button>
             </div>
           </div>
         </div>
@@ -857,11 +924,9 @@ const FinancePage = () => {
         isOpen={confirmModal.isOpen}
         title={confirmModal.title}
         message={confirmModal.message}
-        confirmText="Xác nhận"
-        cancelText="Hủy"
-        isDanger={confirmModal.isDanger}
         onConfirm={confirmModal.onConfirm}
         onCancel={() => setConfirmModal((previous) => ({ ...previous, isOpen: false }))}
+        isDanger={confirmModal.isDanger}
       />
     </div>
   );

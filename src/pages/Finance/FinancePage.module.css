@@ -811,3 +811,227 @@
     grid-column: span 1;
   }
 }
+
+/* STUDENT TABLE & ACTIONS STYLING */
+.filterGridClassOnly {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: end;
+}
+
+@media (max-width: 768px) {
+  .filterGridClassOnly {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tableHeaderSub {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.06);
+  background: rgba(247, 246, 243, 0.5);
+}
+
+.subTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary);
+  margin: 0;
+}
+
+.classNameHighlight {
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.badgeCount {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: rgba(37, 99, 235, 0.1);
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.studentInfoCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatarCircle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+}
+
+.studentName {
+  font-weight: 600;
+  color: #0f172a;
+  display: block;
+  font-size: 14px;
+}
+
+.studentSubtext {
+  font-size: 12px;
+  color: #64748b;
+  display: block;
+}
+
+.classTag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.actionBtnGroup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btnActionPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: none;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+}
+
+.btnActionPrimary:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.btnActionSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(15, 23, 42, 0.15);
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btnActionSecondary:hover {
+  background: #f8fafc;
+  border-color: #2563eb;
+  color: #2563eb;
+  transform: translateY(-1px);
+}
+
+.btnActionPrimary span,
+.btnActionSecondary span {
+  font-size: 16px;
+}
+
+/* HISTORY MODAL STYLES */
+.modalWide {
+  max-width: 940px !important;
+}
+
+.modalSubtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin: 2px 0 0;
+}
+
+.modalAnalyticsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 640px) {
+  .modalAnalyticsRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+.modalAnalyticBox {
+  background: #f8fafc;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalAnalyticBox small {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.modalAnalyticBox strong {
+  font-size: 18px;
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.boxSuccess {
+  background: #f0fdf4;
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+.boxSuccess strong {
+  color: #16a34a;
+}
+
+.boxWarning {
+  background: #fffbeb;
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+.boxWarning strong {
+  color: #d97706;
+}
+
+.historyFilterRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.emptyStateModal {
+  text-align: center;
+  padding: 40px 20px;
+  color: #64748b;
+  font-size: 14px;
+}
+
