@@ -281,6 +281,10 @@
   color: var(--error);
 }
 
+.textLeft {
+  text-align: left;
+}
+
 .textRight {
   text-align: right;
 }

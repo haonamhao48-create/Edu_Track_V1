@@ -563,12 +563,18 @@ const FinancePage = () => {
                     <span className={styles.badgeCount}>{filteredStudents.length} học sinh</span>
                   </div>
                   <table className={styles.table}>
+                    <colgroup>
+                      <col style={{ width: '70px' }} />
+                      <col />
+                      <col style={{ width: '220px' }} />
+                      <col style={{ width: '360px' }} />
+                    </colgroup>
                     <thead>
                       <tr>
-                        <th style={{ width: '60px' }}>STT</th>
-                        <th>Học sinh</th>
-                        <th>Lớp học</th>
-                        <th className={styles.textCenter} style={{ width: '340px' }}>Thao tác / Chức năng</th>
+                        <th className={styles.textCenter}>STT</th>
+                        <th className={styles.textLeft}>HỌC SINH</th>
+                        <th className={styles.textCenter}>LỚP HỌC</th>
+                        <th className={styles.textCenter}>THAO TÁC / CHỨC NĂNG</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -577,7 +583,7 @@ const FinancePage = () => {
                           <td className={styles.textCenter} style={{ color: '#64748b', fontWeight: '600' }}>
                             {index + 1}
                           </td>
-                          <td>
+                          <td className={styles.textLeft}>
                             <div className={styles.studentInfoCell}>
                               <div className={styles.avatarCircle}>
                                 {getInitials(student.name)}
@@ -588,7 +594,7 @@ const FinancePage = () => {
                               </div>
                             </div>
                           </td>
-                          <td>
+                          <td className={styles.textCenter}>
                             <span className={styles.classTag}>{selectedClass?.name || 'Chưa phân lớp'}</span>
                           </td>
                           <td className={styles.textCenter}>
