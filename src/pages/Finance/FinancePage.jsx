@@ -264,7 +264,7 @@ const FinancePage = () => {
       setError('');
 
       try {
-        const response = await studentService.getStudentsByClass(selectedClassId);
+        const response = await studentService.getStudentsByClass(selectedClassId, { page: 1, pageSize: 1000 });
         setStudents(normalizeList(response).map(normalizeStudent));
       } catch (fetchError) {
         setError(fetchError.message || 'Không thể tải danh sách học sinh của lớp này.');

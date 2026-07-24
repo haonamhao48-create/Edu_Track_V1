@@ -23,8 +23,8 @@ export const studentService = {
   },
 
   // Lấy danh sách học sinh theo lớp - GET /api/academic/enrollments/{classId}/students
-  getStudentsByClass: async (classId) => {
-    return await apiClient(`/academic/enrollments/${classId}/students`, {
+  getStudentsByClass: async (classId, { page = 1, pageSize = 1000 } = {}) => {
+    return await apiClient(`/academic/enrollments/${classId}/students?page=${page}&pageSize=${pageSize}`, {
       method: 'GET',
     });
   },
